@@ -1,5 +1,3 @@
-// src/index.ts
-
 import { Command } from 'commander';
 import { version } from '../package.json';
 import { readFile, stat } from 'fs/promises';
@@ -61,7 +59,8 @@ program
     // Expand glob
     let files = await glob(patterns, {
       onlyFiles: true,
-      absolute: options.absolute ?? false,
+      dot: true,
+      absolute: false,
     });
 
     if (files.length === 0) {
@@ -84,7 +83,7 @@ program
     for (const file of files) {
       if (options.content) {
         const fileOutput = await getFileContent(
-          file,
+          options.absolute ? path.join(process.cwd(), file) : file,
           options.maxLines ?? undefined,
           options.lineNumbers ?? false,
         );
