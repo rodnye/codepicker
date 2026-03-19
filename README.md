@@ -30,6 +30,7 @@ This pipes all relevant TypeScript/TSX files directly into my clipboard, ready t
 - **Auto-copy output** directly to clipboard with `--copy` flag
 - Support for absolute or relative paths
 - Option to show only file paths without content
+- **Intelligent handling of binary files** - shows metadata instead of attempting to display unreadable content
 - Written in TypeScript
 
 ## Installation
@@ -220,6 +221,17 @@ Output:
 /home/pedrito/project/src/utils/helpers.ts
 /home/pedrito/project/src/types/index.ts
 ```
+
+### Binary file handling
+
+When encountering binary files (like images, compiled binaries, etc.), the tool safely displays metadata instead of attempting to show unreadable content:
+
+````
+```png
+// assets/logo.png
+// [BINARY FILE] - Size: 0.024 MB
+```
+````
 
 ### Integration with other commands
 
