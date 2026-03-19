@@ -1,9 +1,11 @@
 import { Command } from 'commander';
 import { version } from '../package.json';
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import glob from 'fast-glob';
 import path from 'path';
 import clipboard from 'clipboardy';
+import { isBinaryFile } from './utils/binary';
+import { addLineNumbers, formatSizeInMB } from './utils/pipes';
 
 interface Options {
   content?: boolean;
@@ -97,24 +99,6 @@ const findMaxConsecutiveBackticks = (str: string): number => {
 };
 
 /**
- * Add line numbers to content
- */
-const addLineNumbers = (content: string, startLine: number = 1): string => {
-  const lines = content.split('\n');
-
-  // calculate width of bar
-  const paddingWidth = (startLine + lines.length - 1).toString().length;
-
-  return lines
-    .map((line, index) => {
-      const lineNumber = startLine + index;
-      const paddedNumber = lineNumber.toString().padStart(paddingWidth, ' ');
-      return `${paddedNumber} | ${line}`;
-    })
-    .join('\n');
-};
-
-/**
  * Get file content with markdown format
  * @param filePath - The path to the file
  * @param maxLines - The number of lines to show. If you not provide a number of lines it will show the full file content.
@@ -127,7 +111,27 @@ const getFileContent = async (
   showLineNumbers?: boolean,
 ): Promise<string> => {
   try {
-    const content = await readFile(filePath, 'utf-8');
+    const fileBuffer = await readFile(filePath);
+
+    if (isBinaryFile(fileBuffer)) {
+      // is binary!! not show content
+      const stats = await stat(filePath);
+      const fileSize = stats.size;
+      const extension = path.extname(filePath).replace('.', '');
+      const sizeFormatted = formatSizeInMB(fileSize);
+
+      return (
+        '```' +
+        extension +
+        '\n' +
+        `// ${filePath}\n` +
+        `// [BINARY FILE] - Size: ${sizeFormatted}\n` +
+        '```\n\n'
+      );
+    }
+
+    // is text file!! proceed with normal processing
+    const content = fileBuffer.toString('utf-8');
     const lines = content.split('\n');
 
     // maxLines if exists
