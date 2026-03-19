@@ -31,6 +31,7 @@ This pipes all relevant TypeScript/TSX files directly into my clipboard, ready t
 - Support for absolute or relative paths
 - Option to show only file paths without content
 - **Intelligent handling of binary files** - shows metadata instead of attempting to display unreadable content
+- **Automatic .gitignore filtering** - respects your project's ignore rules by default
 - Written in TypeScript
 
 ## Installation
@@ -47,15 +48,16 @@ stdin-glob [options] [patterns...]
 
 ### Options
 
-| Option                | Description                                                           |
-| --------------------- | --------------------------------------------------------------------- |
-| `--no-content`        | Do not show file contents, only list matching paths                   |
-| `--absolute`          | Show absolute paths for entries                                       |
-| `-c, --copy`          | Copy the output to clipboard instead of printing to console           |
-| `-m, --max-lines <n>` | Show only the first N lines of each file (shows full file if omitted) |
-| `-n, --line-numbers`  | Display line numbers next to each line, like in IDE sidebars          |
-| `-V, --version`       | Output the version number                                             |
-| `-h, --help`          | Display help information                                              |
+| Option                | Description                                                                 |
+| --------------------- | --------------------------------------------------------------------------- |
+| `--no-content`        | Do not show file contents, only list matching paths                         |
+| `--absolute`          | Show absolute paths for entries                                             |
+| `-c, --copy`          | Copy the output to clipboard instead of printing to console                 |
+| `-m, --max-lines <n>` | Show only the first N lines of each file (shows full file if omitted)       |
+| `-n, --line-numbers`  | Display line numbers next to each line, like in IDE sidebars                |
+| `--no-gitignore`      | Disable .gitignore filtering (include files that would normally be ignored) |
+| `-V, --version`       | Output the version number                                                   |
+| `-h, --help`          | Display help information                                                    |
 
 ### Arguments
 
@@ -251,3 +253,20 @@ stdin-glob "src/**/*.ts" --no-content | pbcopy
 stdin-glob "src/**/*.ts" --content
 stdin-glob "src/**/*.ts" --copy
 ```
+
+
+### .gitignore Support
+
+By default, `stdin-glob` automatically respects your project's `.gitignore` rules. This means files and directories listed in `.gitignore` won't appear in the output. This is especially useful when you want to avoid including build artifacts, dependencies, or environment files in your context.
+
+The gitignore pattern matching implementation is based on the official [gitignore pattern format documentation](https://git-scm.com/docs/gitignore#_pattern_format), ensuring compatibility with how git itself handles ignore rules.
+
+#### Including ignored files
+
+If you need to include files that would normally be ignored, use the `--no-gitignore` flag:
+
+```bash
+stdin-glob "dist/**/*.js" --no-gitignore
+```
+
+This disables all `.gitignore` filtering and includes every file matching your patterns.
