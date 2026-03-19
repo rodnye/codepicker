@@ -15,7 +15,7 @@ interface Options {
   copy?: boolean;
   maxLines?: number;
   lineNumbers?: boolean;
-  noGitignore?: boolean; // Nueva opción para desactivar gitignore
+  gitignore?: boolean;
 }
 
 const program = new Command();
@@ -46,8 +46,7 @@ program
   )
   .option(
     '--no-gitignore',
-    'Disable .gitignore filtering (include files that would normally be ignored)',
-    false,
+    'Disable .gitignore filtering (include files that would normally be ignored)'
   )
   .argument('[patterns...]', 'Glob patterns to match files')
   .action(async (patterns: string[], options: Options) => {
@@ -69,7 +68,7 @@ program
     }
 
     // Apply gitignore filtering if not disabled
-    if (!options.noGitignore) {
+    if (options.gitignore) {
       files = await filterByGitignore(files);
 
       if (files.length === 0) {
