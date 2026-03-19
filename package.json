@@ -13,8 +13,7 @@
     "prepublishOnly": "npm run build",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test:coverage": "vitest run --coverage"
   },
   "files": [
     "dist/**/*.js",
