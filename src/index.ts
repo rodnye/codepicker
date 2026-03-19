@@ -1,18 +1,23 @@
+// src/index.ts
+
 import { Command } from 'commander';
 import { version } from '../package.json';
 import { readFile, stat } from 'fs/promises';
 import glob from 'fast-glob';
 import path from 'path';
 import clipboard from 'clipboardy';
+import ignore from 'ignore';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
+import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
 
 interface Options {
   content?: boolean;
   absolute?: boolean;
   copy?: boolean;
   maxLines?: number;
-  lineNumbers?: boolean; // Nueva opción
+  lineNumbers?: boolean;
+  noGitignore?: boolean; // Nueva opción para desactivar gitignore
 }
 
 const program = new Command();
@@ -41,6 +46,11 @@ program
     'Show line numbers next to each line, like in IDE sidebars',
     false,
   )
+  .option(
+    '--no-gitignore',
+    'Disable .gitignore filtering (include files that would normally be ignored)',
+    false,
+  )
   .argument('[patterns...]', 'Glob patterns to match files')
   .action(async (patterns: string[], options: Options) => {
     if (patterns.length === 0) {
@@ -48,8 +58,8 @@ program
       process.exit(1);
     }
 
-    //expand glob
-    const files = await glob(patterns, {
+    // Expand glob
+    let files = await glob(patterns, {
       onlyFiles: true,
       absolute: options.absolute ?? false,
     });
@@ -57,6 +67,16 @@ program
     if (files.length === 0) {
       console.error('No files matched the given patterns.');
       process.exit(1);
+    }
+
+    // Apply gitignore filtering if not disabled
+    if (!options.noGitignore) {
+      files = await filterByGitignore(files);
+
+      if (files.length === 0) {
+        console.error('No files remained after applying .gitignore rules.');
+        process.exit(1);
+      }
     }
 
     let output = '';
@@ -88,6 +108,35 @@ program
   });
 
 program.parse(process.argv);
+
+/**
+ * Filter files by .gitignore rules recursively
+ */
+const filterByGitignore = async (files: string[]): Promise<string[]> => {
+  try {
+    // Find all .gitignore files in the project
+    const gitignoreFiles = await findGitignoreFiles();
+
+    if (gitignoreFiles.length === 0) {
+      return files;
+    }
+
+    // Create ignore instance with all rules
+    const ig = ignore().add(await loadGitignoreRules(gitignoreFiles));
+
+    return files.filter((file) => {
+      // Get relative path from the root where gitignore rules apply
+      const relativePath = path.relative(process.cwd(), file);
+      return !ig.ignores(relativePath);
+    });
+  } catch (error) {
+    console.warn(
+      'Warning: Error processing .gitignore files, proceeding without filtering:',
+      error,
+    );
+    return files;
+  }
+};
 
 /**
  * Find the maximum number of consecutive backticks in a string
