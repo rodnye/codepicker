@@ -133,20 +133,19 @@ describe('getFileContent', () => {
 });
 
 describe('CLI Integration', () => {
-  
   it('exits with error when no patterns provided', async () => {
     vi.mocked(findGitignoreFiles).mockResolvedValue([]);
     const mockExit = vi
-    .spyOn(process, 'exit')
-    .mockImplementation(() => undefined as never);
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
     const mockError = vi.spyOn(console, 'error').mockImplementation(() => {});
     await main();
-    
+
     expect(mockExit).toHaveBeenCalledWith(1);
     mockExit.mockRestore();
     mockError.mockRestore();
   });
-  
+
   it('exits with error when no files matched', async () => {
     vi.mocked(findGitignoreFiles).mockResolvedValue([]);
     const mockExit = vi

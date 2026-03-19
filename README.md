@@ -254,7 +254,6 @@ stdin-glob "src/**/*.ts" --content
 stdin-glob "src/**/*.ts" --copy
 ```
 
-
 ### .gitignore Support
 
 By default, `stdin-glob` automatically respects your project's `.gitignore` rules. This means files and directories listed in `.gitignore` won't appear in the output. This is especially useful when you want to avoid including build artifacts, dependencies, or environment files in your context.
