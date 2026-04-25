@@ -1,12 +1,13 @@
 {
-  "name": "stdin-glob",
+  "name": "codepicker",
   "version": "1.8.1",
-  "description": "Expand glob patterns and output file contents.",
+  "description": "Pick code into Markdown. Apply Markdown to code. Built for LLMs and quick backups.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "packageManager": "pnpm@10.0.0",
   "bin": {
-    "stdin-glob": "./bin/stdin-glob.cjs"
+    "codepicker": "./bin/codepicker.cjs",
+    "codep": "./bin/codepicker.cjs"
   },
   "scripts": {
     "build": "tsc",
@@ -32,12 +33,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rodnye/stdin-glob.git"
+    "url": "git+https://github.com/rodnye/codepicker.git"
   },
   "bugs": {
-    "url": "https://github.com/rodnye/stdin-glob/issues"
+    "url": "https://github.com/rodnye/codepicker/issues"
   },
-  "homepage": "https://github.com/rodnye/stdin-glob#readme",
+  "homepage": "https://github.com/rodnye/codepicker#readme",
   "dependencies": {
     "clipboardy": "^5.3.1",
     "commander": "^11.1.0",
