@@ -1,21 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readFile, stat } from 'fs/promises';
-import { isBinaryFile } from './utils/binary';
-import { addLineNumbers, formatSizeInMB } from './utils/pipes';
-import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
+import { isBinaryFile } from '../src/utils/binary';
+import { addLineNumbers, formatSizeInMB } from '../src/utils/pipes';
+import { findGitignoreFiles, loadGitignoreRules } from '../src/utils/gitignore';
 import {
   filterByGitignore,
   findMaxConsecutiveBackticks,
   getFileContent,
   main,
-} from './main';
+} from '../src/main';
 
 vi.mock('fs/promises');
 vi.mock('fast-glob', () => ({ default: async () => [] }));
 vi.mock('clipboardy');
-vi.mock('./utils/binary');
-vi.mock('./utils/pipes');
-vi.mock('./utils/gitignore');
+vi.mock('../src/utils/binary');
+vi.mock('../src/utils/pipes');
+vi.mock('../src/utils/gitignore');
 
 describe('filterByGitignore', () => {
   beforeEach(() => {

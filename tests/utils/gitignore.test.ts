@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readFile } from 'fs/promises';
-import { findGitignoreFiles, loadGitignoreRules } from './gitignore';
+import { findGitignoreFiles, loadGitignoreRules } from '../../src/utils/gitignore';
 import glob from 'fast-glob';
 
 vi.mock('fs/promises');

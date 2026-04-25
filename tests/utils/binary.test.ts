@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isBinaryFile } from './binary';
+import { isBinaryFile } from '../../src/utils/binary';
 
 describe('isBinaryFile', () => {
   it('returns false for text content', () => {

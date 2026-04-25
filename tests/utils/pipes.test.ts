@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { addLineNumbers, formatSizeInMB } from './pipes';
+import { addLineNumbers, formatSizeInMB } from '../../src/utils/pipes';
 
 describe('addLineNumbers', () => {
   it('adds line numbers to content', () => {

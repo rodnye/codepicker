@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { writeFile, mkdir, stat, readFile } from 'fs/promises';
-import { parseCodeBlocks, applyFiles, applyFromFile } from './apply';
+import { parseCodeBlocks, applyFiles, applyFromFile } from '../src/apply';
 
 vi.mock('fs/promises');
 
