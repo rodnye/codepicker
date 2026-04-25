@@ -13,7 +13,7 @@ import { applyFromFile } from './apply';
 interface GatherOptions {
   paths?: boolean; // --paths
   absolute?: boolean; // -a, --absolute
-  copy?: boolean; // -c, --copy, --clipboard
+  clipboard?: boolean; // -c, --clipboard
   lines?: number; // -l, --lines
   lineNumbers?: boolean; // -n, --line-numbers
   includeIgnored?: boolean; // -I, --include-ignored
@@ -101,7 +101,7 @@ export const main = async () => {
         }
       }
 
-      if (options.copy) {
+      if (options.clipboard) {
         try {
           await clipboard.write(output.trim());
           console.log('✔ Copied to clipboard successfully!');
