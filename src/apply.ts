@@ -47,8 +47,7 @@ export const parseCodeBlocks = (input: string): ParsedFile[] => {
             // Content is everything after the first line
             let content = contentLines.slice(1).join('\n');
 
-            if (content.indexOf('\n') === 0) 
-              content = content.slice(1);
+            if (content.indexOf('\n') === 0) content = content.slice(1);
 
             // it's a binary file marker? I known't
             const isBinary = content.includes('[BINARY FILE]');
