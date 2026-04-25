@@ -10,51 +10,48 @@ import { addLineNumbers, formatSizeInMB } from './utils/pipes';
 import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
 import { applyFromFile } from './apply';
 
-interface Options {
-  content?: boolean;
-  absolute?: boolean;
-  copy?: boolean;
-  maxLines?: number;
-  lineNumbers?: boolean;
-  gitignore?: boolean;
+interface GatherOptions {
+  paths?: boolean; // --paths
+  absolute?: boolean; // -a, --absolute
+  copy?: boolean; // -c, --copy, --clipboard
+  lines?: number; // -l, --lines
+  lineNumbers?: boolean; // -n, --line-numbers
+  includeIgnored?: boolean; // -I, --include-ignored
 }
 
 export const main = async () => {
   const program = new Command();
 
   program
-    .name('stdin-glob')
-    .description('Expand glob patterns and output file contents and paths')
+    .name('codepicker')
+    .description(
+      'Pick file contents into structured Markdown, or apply them back.',
+    )
     .version(version)
-    .option(
-      '--no-content',
-      'Do not show file contents, only list matching paths',
-    )
-    .option('--absolute', 'Show the absolute path for entries', false)
-    .option(
-      '-c, --copy',
-      'Copy the output to clipboard instead of printing to console',
-      false,
-    )
-    .option(
-      '-m, --max-lines <int>',
-      'Show a limited number of lines in the file. If you not provide a number of lines it will show the full file content.',
-      (value) => {
-        if (isNaN(parseInt(value))) throw new Error('Lines must be a number');
-        return parseInt(value);
-      },
-    )
-    .option(
-      '-n, --line-numbers',
-      'Show line numbers next to each line, like in IDE sidebars',
-      false,
-    )
-    .option(
-      '--no-gitignore',
-      'Disable .gitignore filtering (include files that would normally be ignored)',
-    )
     .argument('[patterns...]', 'Glob patterns to match files')
-    .action(async (patterns: string[], options: Options) => {
+    .option('--paths', 'Output only matching file paths, no content', false)
+    .option(
+      '-a, --absolute',
+      'Show absolute paths instead of relative ones',
+      false,
+    )
+    .option(
+      '-c, --copy, --clipboard',
+      'Copy the output to clipboard instead of stdout',
+      false,
+    )
+    .option(
+      '-l, --lines <number>',
+      'Limit the number of lines per file',
+      parseInt,
+    )
+    .option('-n, --line-numbers', 'Prefix lines with their line numbers', false)
+    .option(
+      '-I, --include-ignored',
+      'Include files matched by .gitignore rules',
+      false,
+    )
+    .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
         console.error('Error: No patterns provided.');
         process.exit(1);
@@ -72,8 +69,8 @@ export const main = async () => {
         process.exit(1);
       }
 
-      // Apply gitignore filtering if not disabled
-      if (options.gitignore) {
+      // Apply gitignore filtering by default (unless -I is passed)
+      if (!options.includeIgnored) {
         files = await filterByGitignore(files);
 
         if (files.length === 0) {
@@ -85,15 +82,20 @@ export const main = async () => {
       let output = '';
 
       for (const file of files) {
-        if (options.content) {
-          const fileOutput = await getFileContent(
-            options.absolute ? path.join(process.cwd(), file) : file,
-            options.maxLines ?? undefined,
-            options.lineNumbers ?? false,
+        if (!options.paths) {
+          const displayPath = options.absolute
+            ? path.join(process.cwd(), file)
+            : file;
+          output += await getFileContent(
+            displayPath,
+            options.lines,
+            options.lineNumbers,
           );
-          output += fileOutput;
         } else {
-          output += file + '\n';
+          const displayPath = options.absolute
+            ? path.join(process.cwd(), file)
+            : file;
+          output += displayPath + '\n';
         }
       }
 
@@ -114,18 +116,17 @@ export const main = async () => {
   program
     .command('apply')
     .description(
-      'Apply code blocks from a file to create/update files (inverse operation)',
+      'Read a Markdown file and extract/write its code blocks to disk.',
     )
-    .argument('<input-file>', 'File containing code blocks in markdown format')
+    .argument('<dump-file>', 'Markdown file containing code blocks')
     .option(
       '-d, --dir <path>',
-      'Base directory to apply files (default: current directory)',
+      'Base directory to write files to',
+      process.cwd(),
     )
+    .option('--dry-run', 'Preview changes without writing to disk', false)
     .action(
-      async (
-        inputFile: string,
-        options: { dir?: string; dryRun?: boolean },
-      ) => {
+      async (inputFile: string, options: { dir: string; dryRun: boolean }) => {
         try {
           const { parseCodeBlocks } = await import('./apply');
           const content = await readFile(inputFile, 'utf-8');
