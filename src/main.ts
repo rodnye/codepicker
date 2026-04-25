@@ -17,6 +17,7 @@ interface GatherOptions {
   lines?: number; // -l, --lines
   lineNumbers?: boolean; // -n, --line-numbers
   includeIgnored?: boolean; // -I, --include-ignored
+  doc?: boolean; // -D, --doc
 }
 
 export const main = async () => {
@@ -49,6 +50,11 @@ export const main = async () => {
     .option(
       '-I, --include-ignored',
       'Include files matched by .gitignore rules',
+      false,
+    )
+    .option(
+      '-D, --doc',
+      'Append Codepick format documentation at the end of the output',
       false,
     )
     .action(async (patterns: string[], options: GatherOptions) => {
@@ -99,6 +105,14 @@ export const main = async () => {
             : file;
           output += displayPath + '\n';
         }
+      }
+
+      if (options.doc) {
+        const docPath = path.join(__dirname, '../CODEPICK_FORMAT.md');
+        const docContent = await readFile(docPath, 'utf-8');
+
+        output += '\n\n---\n\n';
+        output += docContent;
       }
 
       if (options.clipboard) {
