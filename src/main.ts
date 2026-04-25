@@ -8,6 +8,7 @@ import ignore from 'ignore';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
 import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
+import { applyFromFile } from './apply';
 
 interface Options {
   content?: boolean;
@@ -108,6 +109,57 @@ export const main = async () => {
         console.log(output.trim());
       }
     });
+
+  // Apply subcommand
+  program
+    .command('apply')
+    .description(
+      'Apply code blocks from a file to create/update files (inverse operation)',
+    )
+    .argument('<input-file>', 'File containing code blocks in markdown format')
+    .action(
+      async (
+        inputFile: string,
+        options: { dir?: string },
+      ) => {
+        try {
+          const { parseCodeBlocks } = await import('./apply');
+          const content = await readFile(inputFile, 'utf-8');
+          const parsed = parseCodeBlocks(content);
+
+          if (parsed.length === 0) {
+            console.error('No valid code blocks found in the input file.');
+            process.exit(1);
+          }
+
+          console.log(`Found ${parsed.length} file(s) to process:\n`);
+
+          for (const file of parsed) {
+            const status = file.isBinary ? '[SKIP - binary]' : '[OK]';
+            console.log(`  ${status} ${file.filePath}`);
+          }
+
+          const result = await applyFromFile(inputFile, options.dir);
+
+          console.log('\nResults:');
+          if (result.created.length > 0) {
+            console.log(`  Created: ${result.created.length}`);
+            result.created.forEach((f) => console.log(`    + ${f}`));
+          }
+          if (result.updated.length > 0) {
+            console.log(`  Updated: ${result.updated.length}`);
+            result.updated.forEach((f) => console.log(`    ~ ${f}`));
+          }
+          if (result.skipped.length > 0) {
+            console.log(`  Skipped (binary): ${result.skipped.length}`);
+            result.skipped.forEach((f) => console.log(`    - ${f}`));
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          process.exit(1);
+        }
+      },
+    );
 
   await program.parseAsync(process.argv);
 };
