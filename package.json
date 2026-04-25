@@ -1,6 +1,6 @@
 {
-  "name": "codepicker",
-  "version": "2.0.0",
+  "name": "codepicker-tool",
+  "version": "2.0.1",
   "description": "Pick code into Markdown. Apply Markdown to code. Built for LLMs and quick backups.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
