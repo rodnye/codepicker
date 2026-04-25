@@ -12,27 +12,24 @@ codepicker "src/**/*.ts" -c
 codepicker apply response.md
 ```
 
-> **Bonus: It's also a code serializer. Just redirect the output to a file `codepicker "src/**/*.ts" > backup.md`) to instantly snapshot chunks of your codebase into a single, readable text document.**
-
 ---
 
-[![npm version](https://img.shields.io/npm/v/stdin-glob.svg)](https://www.npmjs.com/package/stdin-glob)
-[![npm license](https://img.shields.io/npm/l/stdin-glob.svg)](https://www.npmjs.com/package/stdin-glob)
+[![npm version](https://img.shields.io/npm/v/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
+[![npm license](https://img.shields.io/npm/l/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)  
-[![GitHub stars](https://img.shields.io/github/stars/rodnye/stdin-glob.svg)](https://github.com/rodnye/stdin-glob)
+[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker-tool.svg)](https://github.com/rodnye/codepicker-tool)
 
 A bidirectional CLI tool that turns your filesystem into structured Markdown and back again. It is designed to bridge the gap between your codebase and chat with Large Language Models (LLMs), making it effortless to gather project context or restore generated code.
 
 ## Why?
 
-Working with LLMs on existing codebases involves a tedious loop: opening files, copying paths, copying content, pasting, and then manually recreating the LLM's response back into your project.
+Working with LLMs on existing codebases involves a tedious loop: opening files, copying paths, copying content, pasting, and then manually recreating the LLM's response back into your project. Integrated agents in IDEs and the terminal simplify the process, but we don't always have access to them, or sometimes using traditional chat interfaces allows more flexibility in prompt editing and context persistence.
 
 `codepicker` automates this entirely:
 
 1. **Extract:** It grabs multiple files via glob patterns, wraps them cleanly in Markdown, and copies them to your clipboard in one command.
 2. **Apply (Inverse):** When an LLM returns modified code inside a Markdown file, `codepicker apply` parses it, ignores the conversational "noise", and perfectly recreates or updates the files on your disk.
-
-It's also an excellent tool for creating lightweight, human-readable text backups of specific file clusters.
+3. **Snapshot:** It creates safe, human-readable code snapshots with zero risk of accidental modification. Unlike copy-pasting or drag-and-drop, there's no chance of overwriting files or losing context. Just a clean Markdown backup you can version, share, or archive.
 
 ## Features
 
@@ -47,8 +44,20 @@ It's also an excellent tool for creating lightweight, human-readable text backup
 ## Installation
 
 ```bash
-npm install -g codepicker
+npm install -g codepicker-tool
 ```
+
+You can run this command from your terminal:
+
+```bash
+codepicker --version
+
+# or
+
+codep --version
+```
+
+> `codep` is just a shorter alias for `codepicker`.
 
 ## Usage
 
