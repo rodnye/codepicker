@@ -32,6 +32,7 @@ This pipes all relevant TypeScript/TSX files directly into my clipboard, ready t
 - Option to show only file paths without content
 - **Intelligent handling of binary files** - shows metadata instead of attempting to display unreadable content
 - **Automatic .gitignore filtering** - respects your project's ignore rules by default
+- **Reverse apply** - recreate files from a markdown document containing code blocks (inverse operation)
 - Written in TypeScript
 
 ## Installation
@@ -64,6 +65,44 @@ stdin-glob [options] [patterns...]
 | Argument   | Description                                |
 | ---------- | ------------------------------------------ |
 | `patterns` | Glob patterns to match files (one or more) |
+
+### Apply Command
+
+The `apply` subcommand is the inverse operation: it reads a file containing code blocks in the format produced by `stdin-glob` and creates or updates the corresponding files on disk.
+
+```bash
+stdin-glob apply <input-file> [options]
+```
+
+#### Apply Options
+
+| Option             | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| `<input-file>`     | File containing code blocks in markdown format             |
+| `-d, --dir <path>` | Base directory to apply files (default: current directory) |
+| `--dry-run`        | Show what would be done without making any changes         |
+
+#### How It Works
+
+The `apply` command parses a document looking for code blocks that follow this structure:
+
+````
+```ext
+// path/to/file.ext
+file content here
+```
+````
+
+It then creates or updates each file based on the extracted content. This is particularly useful when an LLM generates modified code—you can simply apply the output directly to your project.
+
+Key behaviors:
+
+- **Noise tolerance**: Ignores any text outside of code blocks (explanations, comments, etc.)
+- **Matching backticks**: Only recognizes code blocks where the opening and closing have the exact same number of backticks
+- **Binary file detection**: Files marked with `[BINARY FILE]` are automatically skipped
+- **Truncation warnings**: Warns when the source content was truncated
+- **Directory creation**: Automatically creates any necessary parent directories
+- **Create vs. update**: Reports which files were created new and which were modified
 
 ## Pattern Syntax
 
@@ -269,3 +308,103 @@ stdin-glob "dist/**/*.js" --no-gitignore
 ```
 
 This disables all `.gitignore` filtering and includes every file matching your patterns.
+
+### Apply files from markdown output
+
+Apply code blocks from a file directly to your project:
+
+```bash
+stdin-glob apply output.md
+```
+
+This reads `output.md`, finds all code blocks with file paths, and creates or updates the corresponding files.
+
+#### Apply to a specific directory
+
+Target a different directory than the current one:
+
+```bash
+stdin-glob apply output.md --dir ./my-project
+```
+
+#### Dry run
+
+Preview what would happen without making any changes:
+
+```bash
+stdin-glob apply output.md --dry-run
+```
+
+Output:
+
+```
+Found 3 file(s) to process:
+
+  [OK] src/index.ts
+  [OK] src/utils/helpers.ts
+  [WARN - truncated] src/types/index.ts
+
+[Dry run] No files were modified.
+```
+
+#### Handling noisy input
+
+The `apply` command is designed to work with real LLM output, which often includes explanations between code blocks:
+
+````
+Here are the updated files:
+
+The main index file has been modified to add error handling:
+
+```ts
+// src/index.ts
+console.log('Hello!');
+```
+
+I also created a new utility:
+
+```js
+// src/utils/new.js
+export const helper = () => true;
+```
+
+Let me know if you need anything else!
+````
+
+Running `stdin-glob apply response.md` on the above will correctly extract and apply only the two code blocks, ignoring all the surrounding text.
+
+#### Full workflow example
+
+A typical workflow when working with LLMs:
+
+```bash
+# 1. Gather context from your project
+stdin-glob "src/**/*.ts" --copy
+
+# 2. Paste into your LLM and ask for modifications
+
+# 3. Save the LLM response to a file
+# (paste from clipboard)
+# pbpaste > response.md
+
+# 4. Preview what will change
+stdin-glob apply response.md --dry-run
+
+# 5. Apply the changes
+stdin-glob apply response.md
+```
+
+Output after applying:
+
+```
+Found 2 file(s) to process:
+
+  [OK] src/index.ts
+  [OK] src/utils/new.js
+
+Results:
+  Created: 1
+    + src/utils/new.js
+  Updated: 1
+    ~ src/index.ts
+```
