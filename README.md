@@ -17,7 +17,7 @@ codepicker apply response.md
 [![npm version](https://img.shields.io/npm/v/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![npm license](https://img.shields.io/npm/l/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)  
-[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker-tool.svg)](https://github.com/rodnye/codepicker-tool)
+[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker-tool.svg)](https://github.com/rodnye/codepicker)
 
 A bidirectional CLI tool that turns your filesystem into structured Markdown and back again. It is designed to bridge the gap between your codebase and chat with Large Language Models (LLMs), making it effortless to gather project context or restore generated code.
 
