@@ -36,7 +36,7 @@ export const main = async () => {
       false,
     )
     .option(
-      '-c, --copy, --clipboard',
+      '-c, --clipboard',
       'Copy the output to clipboard instead of stdout',
       false,
     )

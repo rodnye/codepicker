@@ -62,7 +62,7 @@ codepicker [options] [patterns...]
 
 | Option                  | Description                                                              |
 | ----------------------- | ------------------------------------------------------------------------ |
-| `-c, --copy, --clipboard`            | Copy the output directly to your clipboard instead of printing to stdout |
+| `-c, --clipboard`            | Copy the output directly to your clipboard instead of printing to stdout |
 | `-I, --include-ignored` | Include files that are normally matched by .gitignore rules              |
 | `-l, --lines <n>`       | Limit output to the first `n` lines per file                             |
 | `-p, --paths`           | Output only matching file paths (no content)                             |
