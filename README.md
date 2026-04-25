@@ -38,6 +38,7 @@ Working with LLMs on existing codebases involves a tedious loop: opening files, 
 - **Noise Tolerance**: `apply` ignores explanatory text outside of code blocks.
 - **Smart Code Blocks**: Dynamically wraps content in the correct number of backticks to prevent Markdown breaking.
 - **Precision Controls**: Limit lines (`-l`), add line numbers (`-n`), or get absolute paths (`-a`).
+- **Documentation Mode**: Append Codepick format spec to help LLMs understand the bidirectional format (`-D, --doc`).
 - **Binary Safety**: Detects binary files and outputs metadata instead of garbage characters.
 - **.gitignore Aware**: Respects your ignore rules by default (disable with `-I`).
 
@@ -77,6 +78,7 @@ codepicker [options] [patterns...]
 | `-p, --paths`           | Output only matching file paths (no content)                             |
 | `-a, --absolute`        | Show absolute paths instead of relative paths                            |
 | `-n, --line-numbers`    | Prefix lines with their line numbers (like an IDE sidebar)               |
+| `-D, --doc`             | Append Codepick format documentation at the end of the output            |
 | `-V, --version`         | Output the version number                                                |
 | `-h, --help`            | Display help information                                                 |
 
@@ -128,6 +130,18 @@ codepicker apply response.md --dry-run
 ```bash
 codepicker apply response.md
 ```
+
+### Helping LLMs Understand the Format
+
+When you're working with a new LLM or want to ensure it follows the Codepick format correctly, include the format specification:
+
+```bash
+codepicker "src/**/*.ts" -c -D
+```
+
+The `-D` flag appends the complete format documentation to your output. This helps the LLM understand that.
+
+Check spec on [CODEPICK_FORMAT.md](./CODEPICK_FORMAT.md)
 
 ### Backups & Clipboard
 
