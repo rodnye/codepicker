@@ -117,10 +117,14 @@ export const main = async () => {
       'Apply code blocks from a file to create/update files (inverse operation)',
     )
     .argument('<input-file>', 'File containing code blocks in markdown format')
+    .option(
+      '-d, --dir <path>',
+      'Base directory to apply files (default: current directory)',
+    )
     .action(
       async (
         inputFile: string,
-        options: { dir?: string },
+        options: { dir?: string; dryRun?: boolean },
       ) => {
         try {
           const { parseCodeBlocks } = await import('./apply');
@@ -137,6 +141,11 @@ export const main = async () => {
           for (const file of parsed) {
             const status = file.isBinary ? '[SKIP - binary]' : '[OK]';
             console.log(`  ${status} ${file.filePath}`);
+          }
+
+          if (options.dryRun) {
+            console.log('\n[Dry run] No files were modified.');
+            return;
           }
 
           const result = await applyFromFile(inputFile, options.dir);
