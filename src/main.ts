@@ -53,7 +53,7 @@ export const main = async () => {
     )
     .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
-        console.error('Error: No patterns provided.');
+        console.error('✖ Error: Provide at least one glob pattern.');
         process.exit(1);
       }
 
@@ -65,7 +65,7 @@ export const main = async () => {
       });
 
       if (files.length === 0) {
-        console.error('No files matched the given patterns.');
+        console.error('✖ Error: No files matched the given patterns.');
         process.exit(1);
       }
 
@@ -74,7 +74,9 @@ export const main = async () => {
         files = await filterByGitignore(files);
 
         if (files.length === 0) {
-          console.error('No files remained after applying .gitignore rules.');
+          console.error(
+            '✖ Error: No files remained after applying .gitignore rules.',
+          );
           process.exit(1);
         }
       }
@@ -102,9 +104,9 @@ export const main = async () => {
       if (options.copy) {
         try {
           await clipboard.write(output.trim());
-          console.log('-> Output copied to clipboard successfully!');
+          console.log('✔ Copied to clipboard successfully!');
         } catch (error) {
-          console.error('-X Error copying to clipboard:', error);
+          console.error('✖ Error copying to clipboard:', error);
           process.exit(1);
         }
       } else {
@@ -133,7 +135,9 @@ export const main = async () => {
           const parsed = parseCodeBlocks(content);
 
           if (parsed.length === 0) {
-            console.error('No valid code blocks found in the input file.');
+            console.error(
+              '✖ Error: No valid code blocks found in the input file.',
+            );
             process.exit(1);
           }
 
@@ -165,7 +169,7 @@ export const main = async () => {
             result.skipped.forEach((f) => console.log(`    - ${f}`));
           }
         } catch (error) {
-          console.error('Error:', error);
+          console.error('✖ Error:', error);
           process.exit(1);
         }
       },
