@@ -17,7 +17,7 @@ codepicker apply response.md
 [![npm version](https://img.shields.io/npm/v/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![npm license](https://img.shields.io/npm/l/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)  
-[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker-tool.svg)](https://github.com/rodnye/codepicker)
+[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker.svg)](https://github.com/rodnye/codepicker)
 
 A bidirectional CLI tool that turns your filesystem into structured Markdown and back again. It is designed to bridge the gap between your codebase and chat with Large Language Models (LLMs), making it effortless to gather project context or restore generated code.
 
@@ -33,7 +33,7 @@ Working with LLMs on existing codebases involves a tedious loop: opening files, 
 
 ## Features
 
-- **Instant LLM Context**: Copy entire project structures to your clipboard instantly with `--copy` or `-c`.
+- **Instant LLM Context**: Copy entire project structures to your clipboard instantly with `--clipboard` or `-c`.
 - **Bidirectional Workflow**: The `apply` command reverses the process, turning Markdown back into files.
 - **Noise Tolerance**: `apply` ignores explanatory text outside of code blocks.
 - **Smart Code Blocks**: Dynamically wraps content in the correct number of backticks to prevent Markdown breaking.
@@ -159,7 +159,7 @@ codepicker "src/utils/*.js" -c
 # ✔ Copied to clipboard successfully!
 ```
 
-> ![warning]
+> [!warning]
 > **But...** don't mix them! If you run `codepicker "src/**/*.js" -c > backup.md`, your `backup.md` file will only contain the success message (`✔ Copied to clipboard successfully!`), not your actual code. Omit `-c` when you want to save to a file.
 
 ### Limiting Output & Line Numbers
