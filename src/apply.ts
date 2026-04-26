@@ -118,17 +118,3 @@ export const applyFiles = async (
 
   return { created, updated, skipped };
 };
-
-/**
- *
- */
-export const applyFromFile = async (
-  inputPath: string,
-  baseDir?: string,
-): Promise<ApplyResult & { parsed: ParsedFile[] }> => {
-  const content = await readFile(inputPath, 'utf-8');
-  const parsed = parseCodeBlocks(content);
-  const result = await applyFiles(parsed, baseDir);
-
-  return { ...result, parsed };
-};

@@ -8,7 +8,7 @@ import ignore from 'ignore';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
 import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
-import { applyFromFile } from './apply';
+import { applyFiles, parseCodeBlocks } from './apply';
 
 interface GatherOptions {
   paths?: boolean; // --paths
@@ -132,9 +132,12 @@ export const main = async () => {
   program
     .command('apply')
     .description(
-      'Read a Markdown file and extract/write its code blocks to disk.',
+      'Read a Markdown file and extract/write its code blocks to disk. If no file is provided, reads from clipboard.',
     )
-    .argument('<dump-file>', 'Markdown file containing code blocks')
+    .argument(
+      '[dump-file]',
+      'Markdown file containing code blocks (optional, reads from clipboard if omitted)',
+    )
     .option(
       '-d, --dir <path>',
       'Base directory to write files to',
@@ -142,16 +145,37 @@ export const main = async () => {
     )
     .option('--dry-run', 'Preview changes without writing to disk', false)
     .action(
-      async (inputFile: string, options: { dir: string; dryRun: boolean }) => {
+      async (
+        inputFile: string | undefined,
+        options: { dir: string; dryRun: boolean },
+      ) => {
         try {
-          const { parseCodeBlocks } = await import('./apply');
-          const content = await readFile(inputFile, 'utf-8');
+          let content: string;
+
+          if (!inputFile) {
+            // Read from clipboard
+            console.warn(
+              '▲  Warning: No input file provided. Reading from clipboard...',
+            );
+            try {
+              content = await clipboard.read();
+              if (!content || content.trim().length === 0) {
+                console.error('✖ Error: Clipboard is empty.');
+                process.exit(1);
+              }
+            } catch (error) {
+              console.error('✖ Error reading from clipboard:', error);
+              process.exit(1);
+            }
+          } else {
+            // Read from file
+            content = await readFile(inputFile, 'utf-8');
+          }
+
           const parsed = parseCodeBlocks(content);
 
           if (parsed.length === 0) {
-            console.error(
-              '✖ Error: No valid code blocks found in the input file.',
-            );
+            console.error('✖ Error: No valid code blocks found in the input.');
             process.exit(1);
           }
 
@@ -166,8 +190,7 @@ export const main = async () => {
             console.log('\n[Dry run] No files were modified.');
             return;
           }
-
-          const result = await applyFromFile(inputFile, options.dir);
+          const result = await applyFiles(parsed, options.dir);
 
           console.log('\nResults:');
           if (result.created.length > 0) {
