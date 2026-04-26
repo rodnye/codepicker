@@ -11,7 +11,6 @@ Codepick format is a structured Markdown syntax for embedding file contents with
 
 ## Example
 
-````
 ```ts
 // src/index.ts
 console.log('Hello');
@@ -23,11 +22,12 @@ console.log('Hello');
   "name": "my-app"
 }
 ```
-````
 
 ## Rules
 
 - Paths must start with `// ` (space after slashes)
+- The first line of the code block must contain **only and exclusively** the path (e.g., `// src/index.ts`), with no additional text, comments, or characters
 - Code blocks with different backtick counts are supported
 - Text between blocks is ignored (noise allowed)
 - Empty lines inside blocks are preserved
+- It is recommended to use 5 backticks (`) for wrap the code block fences to avoid conflicts with nested triple backticks inside file contents
