@@ -73,12 +73,12 @@ codepicker [options] [patterns...]
 | Option                  | Description                                                              |
 | ----------------------- | ------------------------------------------------------------------------ |
 | `-c, --clipboard`       | Copy the output directly to your clipboard instead of printing to stdout |
+| `-D, --doc`             | Append Codepick format documentation at the end of the output            |
 | `-I, --include-ignored` | Include files that are normally matched by .gitignore rules              |
+| `-a, --absolute`        | Show absolute paths instead of relative paths                            |
 | `-l, --lines <n>`       | Limit output to the first `n` lines per file                             |
 | `-p, --paths`           | Output only matching file paths (no content)                             |
-| `-a, --absolute`        | Show absolute paths instead of relative paths                            |
 | `-n, --line-numbers`    | Prefix lines with their line numbers (like an IDE sidebar)               |
-| `-D, --doc`             | Append Codepick format documentation at the end of the output            |
 | `-V, --version`         | Output the version number                                                |
 | `-h, --help`            | Display help information                                                 |
 
@@ -87,15 +87,16 @@ codepicker [options] [patterns...]
 The `apply` subcommand reads a Markdown file, finds code blocks formatted by `codepicker` (or an LLM), and writes them to disk.
 
 ```bash
-codepicker apply <dump-file> [options]
+codepicker apply [dump-file] [options]
 ```
 
 #### Apply Options
 
 | Option             | Description                                             |
 | ------------------ | ------------------------------------------------------- |
-| `<input-file>`     | The Markdown file containing code blocks                |
+| `[dump-file]`      | The Markdown file containing code blocks                |
 | `-d, --dir <path>` | Base directory to write files to (default: current dir) |
+| `-c, --clipboard`  | Get code blocks file from clipboard                     |
 | `--dry-run`        | Preview what would be done without making changes       |
 
 ## Pattern Syntax
@@ -111,24 +112,32 @@ This is what `codepicker` was built for.
 **1. Grab context and copy to clipboard:**
 
 ```bash
-codepicker "src/services/*.ts" "src/views/**/*.tsx" -c
+codepicker --doc --clipboard "src/services/*.ts" "src/views/**/*.tsx"
+
+# or short version
+
+codep -Dc "src/services/*.ts" "src/views/**/*.tsx"
 ```
 
-_(Your clipboard now contains perfectly formatted Markdown. Paste it directly into ChatGPT/Claude)._
+**2. Paste context and formulate your question**
 
-**2. Save the LLM's response:**
-Save the response you get back to a file, e.g., `response.md`.
+Paste the context in the chat and write something like:
 
-**3. Preview changes:**
-
-```bash
-codepicker apply response.md --dry-run
 ```
+Modify the view with a blue button and modern shadow.
+IMPORTANT!: For your response use codepick format
+```
+
+**3. Copy to clipboard the LLM response**
 
 **4. Apply to your project:**
 
 ```bash
-codepicker apply response.md
+codepicker apply --clipboard
+
+# or just
+
+codep apply -c
 ```
 
 ### Helping LLMs Understand the Format
@@ -139,7 +148,7 @@ When you're working with a new LLM or want to ensure it follows the Codepick for
 codepicker "src/**/*.ts" -c -D
 ```
 
-The `-D` flag appends the complete format documentation to your output. This helps the LLM understand that.
+The `-D` or `--doc` flag appends the complete format documentation to your output. This helps the LLM understand that.
 
 Check spec on [CODEPICK_FORMAT.md](./CODEPICK_FORMAT.md)
 
