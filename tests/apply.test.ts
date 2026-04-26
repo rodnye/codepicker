@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { writeFile, mkdir, stat, readFile } from 'fs/promises';
-import { parseCodeBlocks, applyFiles, applyFromFile } from '../src/apply';
+import { parseCodeBlocks, applyFiles } from '../src/apply';
 
 vi.mock('fs/promises');
 
@@ -355,37 +355,5 @@ describe('applyFiles', () => {
     expect(result.created).toHaveLength(1);
     expect(result.updated).toHaveLength(1);
     expect(result.skipped).toHaveLength(1);
-  });
-});
-
-describe('applyFromFile', () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
-  it('reads file and applies parsed content', async () => {
-    const inputContent = '```ts\n// test.ts\nconsole.log("test");\n```';
-    vi.mocked(readFile).mockResolvedValue(inputContent);
-    vi.mocked(stat).mockRejectedValue(new Error('Not found'));
-    vi.mocked(mkdir).mockResolvedValue(undefined);
-    vi.mocked(writeFile).mockResolvedValue(undefined);
-
-    const result = await applyFromFile('input.md');
-
-    expect(result.parsed).toHaveLength(1);
-    expect(result.created).toHaveLength(1);
-    expect(readFile).toHaveBeenCalledWith('input.md', 'utf-8');
-  });
-
-  it('passes baseDir to applyFiles', async () => {
-    const inputContent = '```ts\n// test.ts\ncontent\n```';
-    vi.mocked(readFile).mockResolvedValue(inputContent);
-    vi.mocked(stat).mockRejectedValue(new Error('Not found'));
-    vi.mocked(mkdir).mockResolvedValue(undefined);
-    vi.mocked(writeFile).mockResolvedValue(undefined);
-
-    await applyFromFile('input.md', '/output');
-
-    expect(mkdir).toHaveBeenCalledWith('/output', { recursive: true });
   });
 });
