@@ -13,6 +13,7 @@
     "build": "tsc",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
+    "format": "prettier --write .",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage"
@@ -20,7 +21,8 @@
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
-    "bin/*"
+    "bin/*",
+    "CODEPICK_FORMAT.md"
   ],
   "keywords": [
     "glob",
