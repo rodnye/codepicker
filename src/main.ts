@@ -132,31 +132,29 @@ export const main = async () => {
   program
     .command('apply')
     .description(
-      'Read a Markdown file and extract/write its code blocks to disk. If no file is provided, reads from clipboard.',
+      'Read a Markdown file and extract/write its code blocks to disk.',
     )
     .argument(
       '[dump-file]',
-      'Markdown file containing code blocks (optional, reads from clipboard if omitted)',
+      'Markdown file containing code blocks (optional, reads from clipboard if use -c flag)',
     )
     .option(
       '-d, --dir <path>',
       'Base directory to write files to',
       process.cwd(),
     )
+    .option('-c, --clipboard', 'Read code blocks from clipboard', process.cwd())
     .option('--dry-run', 'Preview changes without writing to disk', false)
     .action(
       async (
         inputFile: string | undefined,
-        options: { dir: string; dryRun: boolean },
+        options: { dir: string; dryRun: boolean; clipboard: boolean },
       ) => {
         try {
           let content: string;
 
-          if (!inputFile) {
+          if (options.clipboard) {
             // Read from clipboard
-            console.warn(
-              '▲  Warning: No input file provided. Reading from clipboard...',
-            );
             try {
               content = await clipboard.read();
               if (!content || content.trim().length === 0) {
@@ -168,6 +166,13 @@ export const main = async () => {
               process.exit(1);
             }
           } else {
+            if (!inputFile) {
+              console.error(
+                '✖ Error: No input file provided. If you want use the content of clipboard, please use --clipboard flag...',
+              );
+              process.exit(1);
+            }
+
             // Read from file
             content = await readFile(inputFile, 'utf-8');
           }
