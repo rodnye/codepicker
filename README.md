@@ -35,33 +35,6 @@ Working with LLM chats on existing codebases usually looks like: open files, cop
 
 Even with IDE agents, you're often locked into their workflow.
 
-## Okay, so then?
-
-`codepicker` removes that loop entirely:
-
-### 1. Extract your code
-
-Pull multiple files using glob patterns and convert them into clean Markdown.
-
-### 2. Ask
-
-Paste into your LLM and iterate freely.
-
-### 3. Apply
-
-Take the response and reconstruct files automatically!
-
-## It works?
-
-Yes! ->
-
-- No fragile copy-paste cycles
-- Possibility to back up the code
-- No dependency on IDE integrations
-- Works with any LLM interface
-
-To apply the response, a format called [`codepick`](./CODEPICK_FORMAT.md) is used. This is perfectly parsed, and —unlike diffs or other response formats— it packages the entire content of the file.
-
 ## Features
 
 - **Instant context** → copy entire project slices with `-c`
@@ -72,6 +45,8 @@ To apply the response, a format called [`codepick`](./CODEPICK_FORMAT.md) is use
 - **Documentation mode (`-D`)** → helps LLMs follow the codepick format correctly
 - **Binary-safe** → avoids dumping unreadable content
 - **.gitignore aware** → respects your repo by default
+
+To apply the copied LLM response, a format called [codepick](./CODEPICK_FORMAT.md) is used. This is perfectly parsed, and —unlike diffs or other response formats— it packages the entire content of the file.
 
 ---
 
@@ -91,16 +66,21 @@ codep --version
 
 ## Usage
 
-### Read (extract context)
+### Pick (extract context)
 
 ```bash
-codepicker [options] [patterns...]
+codepicker pick [options] <patterns...>
 ```
+
+> [!note]
+> pick command is optional, just use:
+> `codepicker [options] <patterns...>`
 
 #### Options
 
 | Option                  | Description                 |
 | ----------------------- | --------------------------- |
+| `<patterns...>`      | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find
 | `-c, --clipboard`       | Copy output to clipboard    |
 | `-D, --doc`             | Append format documentation |
 | `-I, --include-ignored` | Include `.gitignore` files  |
@@ -113,10 +93,10 @@ codepicker [options] [patterns...]
 
 ---
 
-### Write (apply changes)
+### Apply (write changes)
 
 ```bash
-codepicker apply [dump-file] [options]
+codepicker apply [options] [dump-file]
 ```
 
 #### Options
@@ -124,9 +104,9 @@ codepicker apply [dump-file] [options]
 | Option             | Description                    |
 | ------------------ | ------------------------------ |
 | `[dump-file]`      | Markdown file with code blocks |
-| `-d, --dir <path>` | Target directory               |
-| `-c, --clipboard`  | Read from clipboard            |
-| `--dry-run`        | Preview changes                |
+| `-c, --clipboard`  | Read from clipboard instead of dump file           |
+| `-d, --dir <path>` | Target directory (default current)               |
+| `--dry-run`        | Preview changes without write               |
 
 ## Typical Workflow
 
