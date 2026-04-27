@@ -3,7 +3,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/rodnye/codepicker/refs/heads/main/docs/logo.png" width="200">
 
-  <h1>codepicker 👌</h1>
+  <h1>codepicker 👌🏻</h1>
 </div>
 
 ```bash
@@ -16,10 +16,10 @@ codepicker "src/**/*.ts" -c
 codepicker apply -c
 ```
 
-[![npm version](https://img.shields.io/npm/v/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
-[![npm license](https://img.shields.io/npm/l/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)
-[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker.svg)](https://github.com/rodnye/codepicker)
+[![npm version](https://img.shields.io/npm/v/codepicker-tool.svg?style=for-the-badge)](https://www.npmjs.com/package/codepicker-tool)
+[![npm downloads](https://img.shields.io/npm/dm/codepicker-tool.svg?color=purple&style=for-the-badge&logo=npm)](https://www.npmjs.com/package/codepicker-tool)
+[![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker.svg?style=for-the-badge&color=white&labelColor=black&logo=github)](https://github.com/rodnye/codepicker)
+[![npm license](https://img.shields.io/npm/l/codepicker-tool.svg?style=for-the-badge)](https://www.npmjs.com/package/codepicker-tool)
 
 ---
 
