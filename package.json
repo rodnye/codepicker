@@ -26,10 +26,15 @@
   ],
   "keywords": [
     "glob",
-    "stdin",
     "cli",
-    "typescript",
-    "fast-glob"
+    "ai",
+    "prompt-toolkit",
+    "backup-tool",
+    "prompt-engineering",
+    "prompt-generator",
+    "llm-tools",
+    "cli",
+    "typescript"
   ],
   "author": "Rodny Estrada<rrodnyestrada1@gmail.com>",
   "license": "MIT",
