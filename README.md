@@ -1,46 +1,79 @@
-# codepicker
+> **Stop copying files into ChatGPT one by one...**
 
-> **Stop copying and pasting files one by one into ChatGPT.**
+<div align="center">
+  <img src="https://raw.githubusercontent.com/rodnye/codepicker/refs/heads/main/docs/logo.png" width="200">
+
+  <h1>codepicker 👌</h1>
+</div>
 
 ```bash
-# 1. Grab your entire backend context to your clipboard in one command
+# 1. Grab your backend context in one command
 codepicker "src/**/*.ts" -c
 
-# 2. Paste into your LLM. When it replies, save the response to a file.
+# 2. Paste into your LLM and copy the response
 
-# 3. Apply the LLM's code directly back to your filesystem
-codepicker apply response.md
+# 3. Apply it back to your project
+codepicker apply -c
 ```
-
----
 
 [![npm version](https://img.shields.io/npm/v/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
 [![npm license](https://img.shields.io/npm/l/codepicker-tool.svg)](https://www.npmjs.com/package/codepicker-tool)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org)
 [![GitHub stars](https://img.shields.io/github/stars/rodnye/codepicker.svg)](https://github.com/rodnye/codepicker)
 
-A bidirectional CLI tool that turns your filesystem into structured Markdown and back again. It is designed to bridge the gap between your codebase and chat with Large Language Models (LLMs), making it effortless to gather project context or restore generated code.
+---
+
+## What?
+
+`codepicker` is a **bidirectional CLI** that turns your codebase into structured Markdown—and back again!
+
+It’s designed to make working with LLMs on real projects **fast and predictable**. Instead of juggling files manually, you move context in and out of your project with a couple of commands.
 
 ## Why?
 
-Working with LLMs on existing codebases involves a tedious loop: opening files, copying paths, copying content, pasting, and then manually recreating the LLM's response back into your project. Integrated agents in IDEs and the terminal simplify the process, but we don't always have access to them, or sometimes using traditional chat interfaces allows more flexibility in prompt editing and context persistence.
+Working with LLM chats on existing codebases usually looks like: open files, copy paths and content, paste into chat, repeat, manually reconstruct changes...
 
-`codepicker` automates this entirely:
+Even with IDE agents, you're often locked into their workflow.
 
-1. **Extract:** It grabs multiple files via glob patterns, wraps them cleanly in Markdown, and copies them to your clipboard in one command.
-2. **Apply (Inverse):** When an LLM returns modified code inside a Markdown file, `codepicker apply` parses it, ignores the conversational "noise", and perfectly recreates or updates the files on your disk.
-3. **Snapshot:** It creates safe, human-readable code snapshots with zero risk of accidental modification. Unlike copy-pasting or drag-and-drop, there's no chance of overwriting files or losing context. Just a clean Markdown backup you can version, share, or archive.
+## Okay, so then?
+
+`codepicker` removes that loop entirely:
+
+### 1. Extract your code
+
+Pull multiple files using glob patterns and convert them into clean Markdown.
+
+### 2. Ask
+
+Paste into your LLM and iterate freely.
+
+### 3. Apply
+
+Take the response and reconstruct files automatically!
+
+## It works?
+
+Yes! ->
+
+- No fragile copy-paste cycles
+- Possibility to back up the code
+- No dependency on IDE integrations
+- Works with any LLM interface
+
+To apply the response, a format called [`codepick`](./CODEPICK_FORMAT.md) is used. This is perfectly parsed, and —unlike diffs or other response formats— it packages the entire content of the file.
 
 ## Features
 
-- **Instant LLM Context**: Copy entire project structures to your clipboard instantly with `--clipboard` or `-c`.
-- **Bidirectional Workflow**: The `apply` command reverses the process, turning Markdown back into files.
-- **Noise Tolerance**: `apply` ignores explanatory text outside of code blocks.
-- **Smart Code Blocks**: Dynamically wraps content in the correct number of backticks to prevent Markdown breaking.
-- **Precision Controls**: Limit lines (`-l`), add line numbers (`-n`), or get absolute paths (`-a`).
-- **Documentation Mode**: Append Codepick format spec to help LLMs understand the bidirectional format (`-D, --doc`).
-- **Binary Safety**: Detects binary files and outputs metadata instead of garbage characters.
-- **.gitignore Aware**: Respects your ignore rules by default (disable with `-I`).
+- **Instant context** → copy entire project slices with `-c`
+- **Reverse workflow** → `apply` turns Markdown back into files
+- **Noise-tolerant parsing** → ignores explanations, keeps only code
+- **Smart Markdown wrapping** → prevents broken code blocks
+- **Precision controls** → limit lines, add numbers, absolute paths (only for context)
+- **Documentation mode (`-D`)** → helps LLMs follow the codepick format correctly
+- **Binary-safe** → avoids dumping unreadable content
+- **.gitignore aware** → respects your repo by default
+
+---
 
 ## Installation
 
@@ -48,13 +81,9 @@ Working with LLMs on existing codebases involves a tedious loop: opening files, 
 npm install -g codepicker-tool
 ```
 
-You can run this command from your terminal:
-
 ```bash
 codepicker --version
-
 # or
-
 codep --version
 ```
 
@@ -62,7 +91,7 @@ codep --version
 
 ## Usage
 
-### 1. Gathering Context (Read)
+### Read (extract context)
 
 ```bash
 codepicker [options] [patterns...]
@@ -70,129 +99,87 @@ codepicker [options] [patterns...]
 
 #### Options
 
-| Option                  | Description                                                              |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `-c, --clipboard`       | Copy the output directly to your clipboard instead of printing to stdout |
-| `-D, --doc`             | Append Codepick format documentation at the end of the output            |
-| `-I, --include-ignored` | Include files that are normally matched by .gitignore rules              |
-| `-a, --absolute`        | Show absolute paths instead of relative paths                            |
-| `-l, --lines <n>`       | Limit output to the first `n` lines per file                             |
-| `-p, --paths`           | Output only matching file paths (no content)                             |
-| `-n, --line-numbers`    | Prefix lines with their line numbers (like an IDE sidebar)               |
-| `-V, --version`         | Output the version number                                                |
-| `-h, --help`            | Display help information                                                 |
+| Option                  | Description                 |
+| ----------------------- | --------------------------- |
+| `-c, --clipboard`       | Copy output to clipboard    |
+| `-D, --doc`             | Append format documentation |
+| `-I, --include-ignored` | Include `.gitignore` files  |
+| `-a, --absolute`        | Use absolute paths          |
+| `-l, --lines <n>`       | Limit lines per file        |
+| `-p, --paths`           | Output only file paths      |
+| `-n, --line-numbers`    | Show line numbers           |
+| `-V, --version`         | Show version                |
+| `-h, --help`            | Help                        |
 
-### 2. Applying Context (Write)
+---
 
-The `apply` subcommand reads a Markdown file, finds code blocks formatted by `codepicker` (or an LLM), and writes them to disk.
+### Write (apply changes)
 
 ```bash
 codepicker apply [dump-file] [options]
 ```
 
-#### Apply Options
+#### Options
 
-| Option             | Description                                             |
-| ------------------ | ------------------------------------------------------- |
-| `[dump-file]`      | The Markdown file containing code blocks                |
-| `-d, --dir <path>` | Base directory to write files to (default: current dir) |
-| `-c, --clipboard`  | Get code blocks file from clipboard                     |
-| `--dry-run`        | Preview what would be done without making changes       |
+| Option             | Description                    |
+| ------------------ | ------------------------------ |
+| `[dump-file]`      | Markdown file with code blocks |
+| `-d, --dir <path>` | Target directory               |
+| `-c, --clipboard`  | Read from clipboard            |
+| `--dry-run`        | Preview changes                |
 
-## Pattern Syntax
+## Typical Workflow
 
-This tool uses [fast-glob](https://github.com/mrmlnc/fast-glob) for pattern matching. For detailed information about available globbing features (like negation `!`, globstars `**`, etc.), refer to the [picomatch documentation](https://github.com/micromatch/picomatch?tab=readme-ov-file#globbing-features).
-
-## Examples
-
-### The Standard LLM Workflow
-
-This is what `codepicker` was built for.
-
-**1. Grab context and copy to clipboard:**
+### 1. Extract context
 
 ```bash
-codepicker --doc --clipboard "src/services/*.ts" "src/views/**/*.tsx"
-
-# or short version
-
 codep -Dc "src/services/*.ts" "src/views/**/*.tsx"
 ```
 
-**2. Paste context and formulate your question**
+### 2. Ask your LLM
 
-Paste the context in the chat and write something like:
+Paste and instruct:
 
 ```
 Modify the view with a blue button and modern shadow.
-IMPORTANT!: For your response use codepick format
+IMPORTANT: Use Codepick format.
 ```
 
-**3. Copy to clipboard the LLM response**
-
-**4. Apply to your project:**
+### 3. Apply result
 
 ```bash
-codepicker apply --clipboard
-
-# or just
-
 codep apply -c
 ```
 
-### Helping LLMs Understand the Format
+## Helping the LLM behave
 
-When you're working with a new LLM or want to ensure it follows the Codepick format correctly, include the format specification:
+Some models need guidance. Use:
 
 ```bash
-codepicker "src/**/*.ts" -c -D
+codepicker "src/**/*.ts" -cD
 ```
 
-The `-D` or `--doc` flag appends the complete format documentation to your output. This helps the LLM understand that.
+The `-D` flag appends the full format spec so the model responds correctly.
 
-Check spec on [CODEPICK_FORMAT.md](./CODEPICK_FORMAT.md)
-
-### Backups & Clipboard
-
-By default, `codepicker` prints to stdout, which is incredibly useful for creating lightweight, human-readable text backups of your source code using standard shell redirection:
+## Backups
 
 ```bash
 codepicker "src/**/*" > backup.md
-# (You can restore this later with: codepicker apply backup.md)
 ```
 
-You can add `-c` to copy the output straight to your clipboard instead.
+Restore anytime:
 
 ```bash
-codepicker "src/utils/*.js" -c
-# ✔ Copied to clipboard successfully!
+codepicker apply backup.md
 ```
 
-> [!warning]
-> **But...** don't mix them! If you run `codepicker "src/**/*.js" -c > backup.md`, your `backup.md` file will only contain the success message (`✔ Copied to clipboard successfully!`), not your actual code. Omit `-c` when you want to save to a file.
+## Useful Patterns
 
-### Limiting Output & Line Numbers
-
-When you only need a summary or header context, limit the lines per file and add line numbers:
+### Limit output
 
 ```bash
 codepicker "src/**/*.ts" -l 5 -n
 ```
-
-Output:
-
-````
-```ts
-// src/index.ts
-
- 1 | import { Command } from 'commander';
- 2 | import { version } from '../package.json';
- 3 | import { readFile } from 'fs/promises';
- 4 | import glob from 'fast-glob';
- 5 | import path from 'path';
-// ... (23 more lines truncated)
-```
-````
 
 ### Listing Paths Only
 
@@ -207,28 +194,23 @@ codepicker "src/**/*.ts" -p -a
 /home/user/project/src/utils/helpers.ts
 ```
 
-### Handling Noisy LLM Outputs
+### Include ignored files
 
-The `apply` command is specifically designed to handle real-world LLM responses. It will safely ignore conversational text and only extract valid code blocks.
-
-If an LLM returns this:
-
-````markdown
-Sure! Here is the updated logic. I also added a helper function.
-
-```ts
-// src/index.ts
-const x = 10;
+```bash
+codepicker "dist/**/*.js" -I
 ```
 
-I hope this helps! Let me know if you need the helper.
-````
+## Handling messy LLM responses
 
-Running `codepicker apply response.md` will successfully create `src/index.ts` with `const x = 10;`, ignoring everything else.
+`apply` ignores everything outside code blocks.
 
-### Binary Files
+If the response includes explanations, they’re safely discarded.
 
-Binary files are safely detected and converted to metadata comments, preventing terminal spam:
+Only valid code is written.
+
+## Binary files
+
+Binary files are replaced with metadata instead of raw bytes:
 
 ````
 ```png
@@ -237,13 +219,20 @@ Binary files are safely detected and converted to metadata comments, preventing 
 ```
 ````
 
-### Including Ignored Files
+## Pattern syntax
 
-By default, `.gitignore` rules are respected. If you explicitly need to grab build artifacts or dependencies:
+Uses `fast-glob`.
 
-```bash
-codepicker "dist/**/*.js" -I
-```
+Supports:
+
+- `**` (globstars)
+- `!` (negation)
+- advanced matching
+
+More info:
+
+- https://github.com/mrmlnc/fast-glob
+- https://github.com/micromatch/picomatch
 
 ## License
 
