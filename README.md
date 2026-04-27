@@ -78,18 +78,18 @@ codepicker pick [options] <patterns...>
 
 #### Options
 
-| Option                  | Description                 |
-| ----------------------- | --------------------------- |
-| `<patterns...>`      | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find
-| `-c, --clipboard`       | Copy output to clipboard    |
-| `-D, --doc`             | Append format documentation |
-| `-I, --include-ignored` | Include `.gitignore` files  |
-| `-a, --absolute`        | Use absolute paths          |
-| `-l, --lines <n>`       | Limit lines per file        |
-| `-p, --paths`           | Output only file paths      |
-| `-n, --line-numbers`    | Show line numbers           |
-| `-V, --version`         | Show version                |
-| `-h, --help`            | Help                        |
+| Option                  | Description                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `<patterns...>`         | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find |
+| `-c, --clipboard`       | Copy output to clipboard                                                                         |
+| `-D, --doc`             | Append format documentation                                                                      |
+| `-I, --include-ignored` | Include `.gitignore` files                                                                       |
+| `-a, --absolute`        | Use absolute paths                                                                               |
+| `-l, --lines <n>`       | Limit lines per file                                                                             |
+| `-p, --paths`           | Output only file paths                                                                           |
+| `-n, --line-numbers`    | Show line numbers                                                                                |
+| `-V, --version`         | Show version                                                                                     |
+| `-h, --help`            | Help                                                                                             |
 
 ---
 
@@ -101,12 +101,12 @@ codepicker apply [options] [dump-file]
 
 #### Options
 
-| Option             | Description                    |
-| ------------------ | ------------------------------ |
-| `[dump-file]`      | Markdown file with code blocks |
-| `-c, --clipboard`  | Read from clipboard instead of dump file           |
-| `-d, --dir <path>` | Target directory (default current)               |
-| `--dry-run`        | Preview changes without write               |
+| Option             | Description                              |
+| ------------------ | ---------------------------------------- |
+| `[dump-file]`      | Markdown file with code blocks           |
+| `-c, --clipboard`  | Read from clipboard instead of dump file |
+| `-d, --dir <path>` | Target directory (default current)       |
+| `--dry-run`        | Preview changes without write            |
 
 ## Typical Workflow
 

@@ -33,9 +33,7 @@ export const main = async () => {
   // Pick subcommand
   program
     .command('pick', { isDefault: true })
-    .description(
-      'Pick defined files in glob patterns and print into Markdown.',
-    )
+    .description('Pick defined files in glob patterns and print into Markdown.')
     .argument('[patterns...]', 'Glob patterns to match files')
     .option('--paths', 'Output only matching file paths, no content', false)
     .option(
