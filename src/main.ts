@@ -143,7 +143,7 @@ export const main = async () => {
       'Base directory to write files to',
       process.cwd(),
     )
-    .option('-c, --clipboard', 'Read code blocks from clipboard', process.cwd())
+    .option('-c, --clipboard', 'Read code blocks from clipboard', false)
     .option('--dry-run', 'Preview changes without writing to disk', false)
     .action(
       async (
