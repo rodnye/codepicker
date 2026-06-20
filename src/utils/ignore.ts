@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises';
 import glob from 'fast-glob';
 import path from 'path';
 import ignore from 'ignore';
+import { DEFAULTS_IGNORE_PATTERNS } from '../consts';
 
 /**
  * Find all ignore files (e.g., .gitignore) in the project
@@ -14,7 +15,7 @@ export const findIgnoreFiles = async (
     const pattern = `**/${ignoreFileName}`;
     const files = await glob(pattern, {
       cwd: process.cwd(),
-      ignore: ['**/node_modules/**'],
+      ignore: DEFAULTS_IGNORE_PATTERNS,
     });
     return files;
   } catch (error) {

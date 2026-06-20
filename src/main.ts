@@ -81,8 +81,8 @@ export const main = async () => {
         process.exit(1);
       }
 
-      // Apply .gitignore filtering by default
-      if (!options.gitignore) {
+      // Apply .gitignore filtering
+      if (options.gitignore) {
         files = await filterByIgnoreFile(files, '.gitignore');
 
         if (files.length === 0) {
@@ -93,8 +93,8 @@ export const main = async () => {
         }
       }
 
-      // Apply .ignore filtering by default
-      if (!options.dotIgnore) {
+      // Apply .ignore filtering
+      if (options.dotIgnore) {
         files = await filterByIgnoreFile(files, '.ignore');
 
         if (files.length === 0) {
