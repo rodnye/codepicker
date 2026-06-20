@@ -50,7 +50,7 @@ export const parseCodeBlocks = (input: string): ParsedFile[] => {
             if (content.indexOf('\n') === 0) content = content.slice(1);
 
             // it's a binary file marker? I known't
-            const isBinary = content.includes('[BINARY FILE]');
+            const isBinary = content.includes('\n// [BINARY FILE]');
 
             files.push({ filePath, content, isBinary });
           }
