@@ -9,6 +9,11 @@ import { addLineNumbers, formatSizeInMB } from './utils/pipes';
 import { filterByIgnoreFile, filterByIgnorePatterns } from './utils/ignore';
 import { applyFiles, parseCodeBlocks } from './apply';
 import { DEFAULTS_IGNORE_PATTERNS } from './consts';
+import {
+  checkGitInstalled,
+  cloneRepository,
+  cleanupTempDir,
+} from './utils/git';
 
 interface GatherOptions {
   paths?: boolean; // --paths
@@ -21,6 +26,8 @@ interface GatherOptions {
   codeignore?: boolean; // --no-codeignore
   dotIgnore?: boolean; // --no-dot-ignore
   defaultPatterns?: boolean; // --no-default-patterns
+  remote?: string; // --remote
+  remoteBranch?: string; // --remote-branch
 }
 
 export const main = async () => {
@@ -72,113 +79,127 @@ export const main = async () => {
       "Don't use default ignore patterns (node_modules, .git, etc...)",
       true,
     )
+    .option('--remote <url>', 'Clone a remote repository and operate inside it')
+    .option(
+      '--remote-branch <branch>',
+      'Branch, tag, or commit to checkout after cloning (default: default branch)',
+    )
     .action(async (patterns: string[], options: GatherOptions) => {
-      if (patterns.length === 0) {
-        console.error('✖ Error: Provide at least one glob pattern.');
-        process.exit(1);
-      }
+      let tempDir: string | null = null;
+      const originalCwd = process.cwd();
 
-      // Expand glob
-      let files = await glob(patterns, {
-        onlyFiles: true,
-        dot: true,
-        absolute: false,
-      });
-
-      if (files.length === 0) {
-        console.error('✖ Error: No files matched the given patterns.');
-        process.exit(1);
-      }
-
-      // Apply default filtering
-      if (options.defaultPatterns) {
-        files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
-        if (files.length === 0) {
-          console.error(
-            '✖ Error: No files remained after applying default codepicker rules.\n' +
-              '  Try using --no-default-patterns if you want to force including these files.',
-          );
-          process.exit(1);
+      try {
+        // If --remote is specified, check Git and clone
+        if (options.remote) {
+          await checkGitInstalled();
+          tempDir = await cloneRepository(options.remote, options.remoteBranch);
+          process.chdir(tempDir);
         }
-      }
 
-      // Apply .gitignore filtering
-      if (options.gitignore) {
-        files = await filterByIgnoreFile(files, '.gitignore');
+        if (patterns.length === 0) {
+          throw new Error('Provide at least one glob pattern.');
+        }
+
+        // Expand glob
+        let files = await glob(patterns, {
+          onlyFiles: true,
+          dot: true,
+          absolute: false,
+        });
 
         if (files.length === 0) {
-          console.error(
-            '✖ Error: No files remained after applying .gitignore rules.\n' +
-              '  Try using --no-gitignore if you want to force including these files.',
-          );
-          process.exit(1);
+          throw new Error('No files matched the given patterns.');
         }
-      }
 
-      // Apply .ignore filtering
-      if (options.dotIgnore) {
-        files = await filterByIgnoreFile(files, '.ignore');
-
-        if (files.length === 0) {
-          console.error(
-            '✖ Error: No files remained after applying .ignore rules.\n' +
-              '  Try using --no-dot-ignore if you want to force including these files.',
-          );
-          process.exit(1);
+        // Apply default filtering
+        if (options.defaultPatterns) {
+          files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
+          if (files.length === 0) {
+            throw new Error(
+              'No files remained after applying default codepicker rules.\n' +
+                '  Try using --no-default-patterns to force including these files.',
+            );
+          }
         }
-      }
 
-      // Apply .codeignore filtering
-      if (options.codeignore) {
-        files = await filterByIgnoreFile(files, '.codeignore');
-
-        if (files.length === 0) {
-          console.error(
-            '✖ Error: No files remained after applying .codeignore rules.\n' +
-              '  Try using --no-codeignore if you want to force including these files.',
-          );
-          process.exit(1);
+        // Apply .gitignore filtering
+        if (options.gitignore) {
+          files = await filterByIgnoreFile(files, '.gitignore');
+          if (files.length === 0) {
+            throw new Error(
+              'No files remained after applying .gitignore rules.\n' +
+                '  Try using --no-gitignore to force including these files.',
+            );
+          }
         }
-      }
 
-      let output = '';
+        // Apply .ignore filtering
+        if (options.dotIgnore) {
+          files = await filterByIgnoreFile(files, '.ignore');
+          if (files.length === 0) {
+            throw new Error(
+              'No files remained after applying .ignore rules.\n' +
+                '  Try using --no-dot-ignore to force including these files.',
+            );
+          }
+        }
 
-      for (const file of files) {
-        if (!options.paths) {
-          const displayPath = options.absolute
-            ? path.join(process.cwd(), file)
-            : file;
-          output += await getFileContent(
-            displayPath,
-            options.lines,
-            options.includeLineNumbers,
-          );
+        // Apply .codeignore filtering
+        if (options.codeignore) {
+          files = await filterByIgnoreFile(files, '.codeignore');
+          if (files.length === 0) {
+            throw new Error(
+              'No files remained after applying .codeignore rules.\n' +
+                '  Try using --no-codeignore to force including these files.',
+            );
+          }
+        }
+
+        let output = '';
+
+        for (const file of files) {
+          if (!options.paths) {
+            const displayPath = options.absolute
+              ? path.join(process.cwd(), file)
+              : file;
+            output += await getFileContent(
+              displayPath,
+              options.lines,
+              options.includeLineNumbers,
+            );
+          } else {
+            const displayPath = options.absolute
+              ? path.join(process.cwd(), file)
+              : file;
+            output += displayPath + '\n';
+          }
+        }
+
+        if (options.includeDocs) {
+          const docPath = path.join(__dirname, '../CODEPICK_FORMAT.md');
+          const docContent = await readFile(docPath, 'utf-8');
+          output += '\n\n---\n\n';
+          output += docContent;
+        }
+
+        if (options.clipboard) {
+          try {
+            await clipboard.write(output.trim());
+            console.log('✔ Copied to clipboard successfully.');
+          } catch (error) {
+            throw new Error(`Error copying to clipboard: ${error}`);
+          }
         } else {
-          const displayPath = options.absolute
-            ? path.join(process.cwd(), file)
-            : file;
-          output += displayPath + '\n';
+          console.log(output.trim());
         }
-      }
-
-      if (options.includeDocs) {
-        const docPath = path.join(__dirname, '../CODEPICK_FORMAT.md');
-        const docContent = await readFile(docPath, 'utf-8');
-
-        output += '\n\n---\n\n';
-        output += docContent;
-      }
-
-      if (options.clipboard) {
-        try {
-          await clipboard.write(output.trim());
-          console.log('✔ Copied to clipboard successfully!');
-        } catch (error) {
-          console.error('✖ Error copying to clipboard:', error);
-          process.exit(1);
+      } catch (error: any) {
+        console.error('✖ Error:', error.message);
+        process.exitCode = 1;
+      } finally {
+        if (tempDir) {
+          process.chdir(originalCwd);
+          await cleanupTempDir(tempDir);
         }
-      } else {
-        console.log(output.trim());
       }
     });
 
@@ -208,34 +229,27 @@ export const main = async () => {
           let content: string;
 
           if (options.clipboard) {
-            // Read from clipboard
             try {
               content = await clipboard.read();
               if (!content || content.trim().length === 0) {
-                console.error('✖ Error: Clipboard is empty.');
-                process.exit(1);
+                throw new Error('Clipboard is empty.');
               }
             } catch (error) {
-              console.error('✖ Error reading from clipboard:', error);
-              process.exit(1);
+              throw new Error(`Error reading from clipboard: ${error}`);
             }
           } else {
             if (!inputFile) {
-              console.error(
-                '✖ Error: No input file provided. If you want use the content of clipboard, please use --clipboard flag...',
+              throw new Error(
+                'No input file provided. Use --clipboard if you want to use the clipboard.',
               );
-              process.exit(1);
             }
-
-            // Read from file
             content = await readFile(inputFile, 'utf-8');
           }
 
           const parsed = parseCodeBlocks(content);
 
           if (parsed.length === 0) {
-            console.error('✖ Error: No valid code blocks found in the input.');
-            process.exit(1);
+            throw new Error('No valid code blocks found in the input.');
           }
 
           console.log(`Found ${parsed.length} file(s) to process:\n`);
@@ -249,6 +263,7 @@ export const main = async () => {
             console.log('\n[Dry run] No files were modified.');
             return;
           }
+
           const result = await applyFiles(parsed, options.dir);
 
           console.log('\nResults:');
@@ -264,9 +279,9 @@ export const main = async () => {
             console.log(`  Skipped (binary): ${result.skipped.length}`);
             result.skipped.forEach((f) => console.log(`    - ${f}`));
           }
-        } catch (error) {
-          console.error('✖ Error:', error);
-          process.exit(1);
+        } catch (error: any) {
+          console.error('✖ Error:', error.message);
+          process.exitCode = 1;
         }
       },
     );
