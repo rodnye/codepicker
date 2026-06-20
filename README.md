@@ -8,7 +8,7 @@
 
 ```bash
 # 1. Grab your backend context in one command
-codepicker "src/**/*.ts" -c
+codepicker "src/**.ts" -c
 
 # 2. Paste into your LLM and copy the response
 
@@ -78,18 +78,23 @@ codepicker pick [options] <patterns...>
 
 #### Options
 
-| Option                  | Description                                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------ |
-| `<patterns...>`         | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find |
-| `-c, --clipboard`       | Copy output to clipboard                                                                         |
-| `-D, --doc`             | Append format documentation                                                                      |
-| `-I, --include-ignored` | Include `.gitignore` files                                                                       |
-| `-a, --absolute`        | Use absolute paths                                                                               |
-| `-l, --lines <n>`       | Limit lines per file                                                                             |
-| `-p, --paths`           | Output only file paths                                                                           |
-| `-n, --line-numbers`    | Show line numbers                                                                                |
-| `-V, --version`         | Show version                                                                                     |
-| `-h, --help`            | Help                                                                                             |
+| Option                       | Description                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `<patterns...>`              | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find |
+| `-c, --clipboard`            | Copy output to clipboard                                                                         |
+| `-D, --include-docs`         | Append 'What is Codepick Format?' documentation                                                  |
+| `-a, --absolute`             | Use absolute paths                                                                               |
+| `-l, --lines <n>`            | Limit lines per file                                                                             |
+| `-p, --paths`                | Output only file paths                                                                           |
+| `-V, --version`              | Show version                                                                                     |
+| `-h, --help`                 | Help                                                                                             |
+| `--no-gitignore`             | Don't use .gitignore rules                                                                       |
+| `--no-codeignore`            | Don't use .codeignore rules                                                                      |
+| `--no-dot-ignore`            | Don't use .ignore rules                                                                          |
+| `--no-default-patterns`      | Don't use [default codepicker rules](./src/consts.ts) (node_modules, .git, etc...)               |
+| `--include-line-numbers`     | Show line numbers                                                                                |
+| `--remote <url>`             | Read code from a remote repository                                                               |
+| `--remote-branch <checkout>` | Specify a commit, branch or tag from remote repository                                           |
 
 ---
 
@@ -113,7 +118,7 @@ codepicker apply [options] [dump-file]
 ### 1. Extract context
 
 ```bash
-codep -Dc "src/services/*.ts" "src/views/**/*.tsx"
+codep -Dc "src/services/**.ts" "src/views/**.tsx"
 ```
 
 ### 2. Ask your LLM
@@ -136,15 +141,29 @@ codep apply -c
 Some models need guidance. Use:
 
 ```bash
-codepicker "src/**/*.ts" -cD
+codepicker "src/**.ts" -cD
 ```
 
 The `-D` flag appends the full format spec so the model responds correctly.
 
+## Remote repository
+
+You can read code from remote repositories:
+
+```bash
+codepicker "src/**.ts" --remote https://github.com/rodnye/codepicker
+```
+
+```bash
+codepicker "src/**.{ts,tsx,astro}" "package.json" \
+  --remote https://github.com/rodnye/wa-catalog \
+  --remote-branch main
+```
+
 ## Backups
 
 ```bash
-codepicker "src/**/*" > backup.md
+codepicker "src/**" > backup.md
 ```
 
 Restore anytime:
@@ -158,7 +177,7 @@ codepicker apply backup.md
 ### Limit output
 
 ```bash
-codepicker "src/**/*.ts" -l 5 -n
+codepicker "src/**.ts" -l 5
 ```
 
 ### Listing Paths Only
@@ -177,7 +196,7 @@ codepicker "src/**/*.ts" -p -a
 ### Include ignored files
 
 ```bash
-codepicker "dist/**/*.js" -I
+codepicker "dist/**.js" --no-gitignore --no-default-patterns
 ```
 
 ## Handling messy LLM responses
