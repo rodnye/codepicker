@@ -8,7 +8,7 @@
 
 ```bash
 # 1. Grab your backend context in one command
-codepicker "src/**/*.ts" -c
+codepicker "src/**.ts" -c
 
 # 2. Paste into your LLM and copy the response
 
@@ -116,7 +116,7 @@ codepicker apply [options] [dump-file]
 ### 1. Extract context
 
 ```bash
-codep -Dc "src/services/*.ts" "src/views/**/*.tsx"
+codep -Dc "src/services/**.ts" "src/views/**.tsx"
 ```
 
 ### 2. Ask your LLM
@@ -139,7 +139,7 @@ codep apply -c
 Some models need guidance. Use:
 
 ```bash
-codepicker "src/**/*.ts" -cD
+codepicker "src/**.ts" -cD
 ```
 
 The `-D` flag appends the full format spec so the model responds correctly.
@@ -147,7 +147,7 @@ The `-D` flag appends the full format spec so the model responds correctly.
 ## Backups
 
 ```bash
-codepicker "src/**/*" > backup.md
+codepicker "src/**" > backup.md
 ```
 
 Restore anytime:
@@ -161,7 +161,7 @@ codepicker apply backup.md
 ### Limit output
 
 ```bash
-codepicker "src/**/*.ts" -l 5 -n
+codepicker "src/**.ts" -l 5
 ```
 
 ### Listing Paths Only
@@ -180,7 +180,7 @@ codepicker "src/**/*.ts" -p -a
 ### Include ignored files
 
 ```bash
-codepicker "dist/**/*.js" -I
+codepicker "dist/**.js" --no-gitignore --no-default-patterns
 ```
 
 ## Handling messy LLM responses
