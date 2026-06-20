@@ -18,6 +18,7 @@ interface GatherOptions {
   includeDocs?: boolean; // -D, --include-docs
   includeLineNumbers?: boolean; // --include-line-numbers
   gitignore?: boolean; // --no-gitignore
+  codeignore?: boolean; // --no-codeignore
   dotIgnore?: boolean; // --no-dot-ignore
   defaultPatterns?: boolean; // --no-default-patterns
 }
@@ -64,6 +65,7 @@ export const main = async () => {
       false,
     )
     .option('--no-gitignore', "Don't use .gitignore rules", true)
+    .option('--no-codeignore', "Don't use .codeignore rules", true)
     .option('--no-dot-ignore', "Don't use .ignore rules", true)
     .option(
       '--no-default-patterns',
@@ -121,6 +123,19 @@ export const main = async () => {
           console.error(
             '✖ Error: No files remained after applying .ignore rules.\n' +
               '  Try using --no-dot-ignore if you want to force including these files.',
+          );
+          process.exit(1);
+        }
+      }
+
+      // Apply .codeignore filtering
+      if (options.codeignore) {
+        files = await filterByIgnoreFile(files, '.codeignore');
+
+        if (files.length === 0) {
+          console.error(
+            '✖ Error: No files remained after applying .codeignore rules.\n' +
+              '  Try using --no-codeignore if you want to force including these files.',
           );
           process.exit(1);
         }
