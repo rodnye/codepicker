@@ -90,6 +90,7 @@ codepicker pick [options] <patterns...>
 | `-h, --help`             | Help                                                                                             |
 | `--no-gitignore`         | Don't use .gitignore rules                                                                       |
 | `--no-dot-ignore`        | Don't use .ignore rules                                                                          |
+| `--no-default-patterns`  | Don't use [default codepicker rules](./src/consts.ts) (node_modules, .git, etc...)               |
 | `--include-line-numbers` | Show line numbers                                                                                |
 
 ---

@@ -87,12 +87,7 @@ export const filterByIgnoreFile = async (
       return files;
     }
 
-    const ig = ignore().add(await loadIgnoreRules(ignoreFiles));
-
-    return files.filter((file) => {
-      const relativePath = path.relative(process.cwd(), file);
-      return !ig.ignores(relativePath);
-    });
+    return filterByIgnorePatterns(files, await loadIgnoreRules(ignoreFiles));
   } catch (error) {
     console.warn(
       `Warning: Error processing ${ignoreFileName} files, proceeding without filtering:`,
@@ -100,4 +95,13 @@ export const filterByIgnoreFile = async (
     );
     return files;
   }
+};
+
+export const filterByIgnorePatterns = (files: string[], patterns: string[]) => {
+  const ig = ignore().add(patterns);
+
+  return files.filter((file) => {
+    const relativePath = path.relative(process.cwd(), file);
+    return !ig.ignores(relativePath);
+  });
 };

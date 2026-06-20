@@ -6,8 +6,9 @@ import path from 'path';
 import clipboard from 'clipboardy';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
-import { filterByIgnoreFile } from './utils/ignore';
+import { filterByIgnoreFile, filterByIgnorePatterns } from './utils/ignore';
 import { applyFiles, parseCodeBlocks } from './apply';
+import { DEFAULTS_IGNORE_PATTERNS } from './consts';
 
 interface GatherOptions {
   paths?: boolean; // --paths
@@ -18,6 +19,7 @@ interface GatherOptions {
   includeLineNumbers?: boolean; // --include-line-numbers
   gitignore?: boolean; // --no-gitignore
   dotIgnore?: boolean; // --no-dot-ignore
+  defaultPatterns?: boolean; // --no-default-patterns
 }
 
 export const main = async () => {
@@ -63,6 +65,10 @@ export const main = async () => {
     )
     .option('--no-gitignore', "Don't use .gitignore rules", true)
     .option('--no-dot-ignore', "Don't use .ignore rules", true)
+    .option(
+      '--no-default-patterns',
+      "Don't use default ignore patterns (node_modules, .git, etc...",
+    )
     .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
         console.error('✖ Error: Provide at least one glob pattern.');
@@ -79,6 +85,17 @@ export const main = async () => {
       if (files.length === 0) {
         console.error('✖ Error: No files matched the given patterns.');
         process.exit(1);
+      }
+
+      // Apply default filtering
+      if (options.defaultPatterns) {
+        files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
+        if (files.length === 0) {
+          console.error(
+            '✖ Error: No files remained after applying default codepicker rules.',
+          );
+          process.exit(1);
+        }
       }
 
       // Apply .gitignore filtering
