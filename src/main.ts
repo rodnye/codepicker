@@ -15,9 +15,9 @@ interface GatherOptions {
   absolute?: boolean; // -a, --absolute
   clipboard?: boolean; // -c, --clipboard
   lines?: number; // -l, --lines
-  lineNumbers?: boolean; // -n, --line-numbers
+  includeDocs?: boolean; // -D, --include-docs
+  includeLineNumbers?: boolean; // --include-line-numbers
   gitignore?: boolean; // --no-gitignore
-  doc?: boolean; // -D, --doc
 }
 
 export const main = async () => {
@@ -51,9 +51,13 @@ export const main = async () => {
       'Limit the number of lines per file',
       parseInt,
     )
-    .option('-n, --line-numbers', 'Prefix lines with their line numbers', false)
     .option(
-      '-D, --doc',
+      '--include-line-numbers',
+      'Prefix lines with their line numbers',
+      false,
+    )
+    .option(
+      '-D, --include-docs',
       'Append Codepick format documentation at the end of the output',
       false,
     )
@@ -98,7 +102,7 @@ export const main = async () => {
           output += await getFileContent(
             displayPath,
             options.lines,
-            options.lineNumbers,
+            options.includeLineNumbers,
           );
         } else {
           const displayPath = options.absolute
@@ -108,7 +112,7 @@ export const main = async () => {
         }
       }
 
-      if (options.doc) {
+      if (options.includeDocs) {
         const docPath = path.join(__dirname, '../CODEPICK_FORMAT.md');
         const docContent = await readFile(docPath, 'utf-8');
 

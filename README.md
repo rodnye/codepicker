@@ -78,18 +78,18 @@ codepicker pick [options] <patterns...>
 
 #### Options
 
-| Option               | Description                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------------ |
-| `<patterns...>`      | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find |
-| `-c, --clipboard`    | Copy output to clipboard                                                                         |
-| `-D, --doc`          | Append format documentation                                                                      |
-| `-a, --absolute`     | Use absolute paths                                                                               |
-| `-l, --lines <n>`    | Limit lines per file                                                                             |
-| `-p, --paths`        | Output only file paths                                                                           |
-| `-n, --line-numbers` | Show line numbers                                                                                |
-| `-V, --version`      | Show version                                                                                     |
-| `-h, --help`         | Help                                                                                             |
-| `--no-gitignore`     | Don't use .gitignore rules                                                                       |
+| Option                   | Description                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| `<patterns...>`          | Required [glob file patterns](https://github.com/micromatch/picomatch#globbing-features) to find |
+| `-c, --clipboard`        | Copy output to clipboard                                                                         |
+| `-D, --include-docs`     | Append 'What is Codepick Format?' documentation                                                  |
+| `-a, --absolute`         | Use absolute paths                                                                               |
+| `-l, --lines <n>`        | Limit lines per file                                                                             |
+| `-p, --paths`            | Output only file paths                                                                           |
+| `-V, --version`          | Show version                                                                                     |
+| `-h, --help`             | Help                                                                                             |
+| `--no-gitignore`         | Don't use .gitignore rules                                                                       |
+| `--include-line-numbers` | Show line numbers                                                                                |
 
 ---
 
