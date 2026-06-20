@@ -4,10 +4,9 @@ import { readFile, stat } from 'fs/promises';
 import glob from 'fast-glob';
 import path from 'path';
 import clipboard from 'clipboardy';
-import ignore from 'ignore';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
-import { findGitignoreFiles, loadGitignoreRules } from './utils/gitignore';
+import { filterByGitignore } from './utils/gitignore';
 import { applyFiles, parseCodeBlocks } from './apply';
 
 interface GatherOptions {
@@ -223,35 +222,6 @@ export const main = async () => {
     );
 
   await program.parseAsync(process.argv);
-};
-
-/**
- * Filter files by .gitignore rules recursively
- */
-export const filterByGitignore = async (files: string[]): Promise<string[]> => {
-  try {
-    // Find all .gitignore files in the project
-    const gitignoreFiles = await findGitignoreFiles();
-
-    if (gitignoreFiles.length === 0) {
-      return files;
-    }
-
-    // Create ignore instance with all rules
-    const ig = ignore().add(await loadGitignoreRules(gitignoreFiles));
-
-    return files.filter((file) => {
-      // Get relative path from the root where gitignore rules apply
-      const relativePath = path.relative(process.cwd(), file);
-      return !ig.ignores(relativePath);
-    });
-  } catch (error) {
-    console.warn(
-      'Warning: Error processing .gitignore files, proceeding without filtering:',
-      error,
-    );
-    return files;
-  }
 };
 
 /**
