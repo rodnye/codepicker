@@ -16,7 +16,7 @@ interface GatherOptions {
   clipboard?: boolean; // -c, --clipboard
   lines?: number; // -l, --lines
   lineNumbers?: boolean; // -n, --line-numbers
-  includeIgnored?: boolean; // -I, --include-ignored
+  gitignore?: boolean; // --no-gitignore
   doc?: boolean; // -D, --doc
 }
 
@@ -53,15 +53,11 @@ export const main = async () => {
     )
     .option('-n, --line-numbers', 'Prefix lines with their line numbers', false)
     .option(
-      '-I, --include-ignored',
-      'Include files matched by .gitignore rules',
-      false,
-    )
-    .option(
       '-D, --doc',
       'Append Codepick format documentation at the end of the output',
       false,
     )
+    .option('--no-gitignore', "Don't use .ignore rules", true)
     .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
         console.error('✖ Error: Provide at least one glob pattern.');
@@ -80,8 +76,8 @@ export const main = async () => {
         process.exit(1);
       }
 
-      // Apply gitignore filtering by default (unless -I is passed)
-      if (!options.includeIgnored) {
+      // Apply gitignore filtering by default
+      if (!options.gitignore) {
         files = await filterByGitignore(files);
 
         if (files.length === 0) {
