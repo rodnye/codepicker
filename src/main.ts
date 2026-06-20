@@ -67,7 +67,8 @@ export const main = async () => {
     .option('--no-dot-ignore', "Don't use .ignore rules", true)
     .option(
       '--no-default-patterns',
-      "Don't use default ignore patterns (node_modules, .git, etc...",
+      "Don't use default ignore patterns (node_modules, .git, etc...)",
+      true,
     )
     .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
@@ -92,7 +93,8 @@ export const main = async () => {
         files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
         if (files.length === 0) {
           console.error(
-            '✖ Error: No files remained after applying default codepicker rules.',
+            '✖ Error: No files remained after applying default codepicker rules.\n' +
+              '  Try using --no-default-patterns if you want to force including these files.',
           );
           process.exit(1);
         }
@@ -104,7 +106,8 @@ export const main = async () => {
 
         if (files.length === 0) {
           console.error(
-            '✖ Error: No files remained after applying .gitignore rules.',
+            '✖ Error: No files remained after applying .gitignore rules.\n' +
+              '  Try using --no-gitignore if you want to force including these files.',
           );
           process.exit(1);
         }
@@ -116,7 +119,8 @@ export const main = async () => {
 
         if (files.length === 0) {
           console.error(
-            '✖ Error: No files remained after applying .ignore rules.',
+            '✖ Error: No files remained after applying .ignore rules.\n' +
+              '  Try using --no-dot-ignore if you want to force including these files.',
           );
           process.exit(1);
         }
