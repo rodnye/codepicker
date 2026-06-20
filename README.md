@@ -89,6 +89,7 @@ codepicker pick [options] <patterns...>
 | `-V, --version`          | Show version                                                                                     |
 | `-h, --help`             | Help                                                                                             |
 | `--no-gitignore`         | Don't use .gitignore rules                                                                       |
+| `--no-dot-ignore`        | Don't use .ignore rules                                                                          |
 | `--include-line-numbers` | Show line numbers                                                                                |
 
 ---

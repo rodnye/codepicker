@@ -6,7 +6,7 @@ import path from 'path';
 import clipboard from 'clipboardy';
 import { isBinaryFile } from './utils/binary';
 import { addLineNumbers, formatSizeInMB } from './utils/pipes';
-import { filterByGitignore } from './utils/gitignore';
+import { filterByIgnoreFile } from './utils/ignore';
 import { applyFiles, parseCodeBlocks } from './apply';
 
 interface GatherOptions {
@@ -17,6 +17,7 @@ interface GatherOptions {
   includeDocs?: boolean; // -D, --include-docs
   includeLineNumbers?: boolean; // --include-line-numbers
   gitignore?: boolean; // --no-gitignore
+  dotIgnore?: boolean; // --no-dot-ignore
 }
 
 export const main = async () => {
@@ -60,7 +61,8 @@ export const main = async () => {
       'Append Codepick format documentation at the end of the output',
       false,
     )
-    .option('--no-gitignore', "Don't use .ignore rules", true)
+    .option('--no-gitignore', "Don't use .gitignore rules", true)
+    .option('--no-dot-ignore', "Don't use .ignore rules", true)
     .action(async (patterns: string[], options: GatherOptions) => {
       if (patterns.length === 0) {
         console.error('✖ Error: Provide at least one glob pattern.');
@@ -79,13 +81,25 @@ export const main = async () => {
         process.exit(1);
       }
 
-      // Apply gitignore filtering by default
+      // Apply .gitignore filtering by default
       if (!options.gitignore) {
-        files = await filterByGitignore(files);
+        files = await filterByIgnoreFile(files, '.gitignore');
 
         if (files.length === 0) {
           console.error(
             '✖ Error: No files remained after applying .gitignore rules.',
+          );
+          process.exit(1);
+        }
+      }
+
+      // Apply .ignore filtering by default
+      if (!options.dotIgnore) {
+        files = await filterByIgnoreFile(files, '.ignore');
+
+        if (files.length === 0) {
+          console.error(
+            '✖ Error: No files remained after applying .ignore rules.',
           );
           process.exit(1);
         }
