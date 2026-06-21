@@ -54,7 +54,7 @@
     "ignore": "^7.0.5"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3",
+    "@types/node": "^26.0.0",
     "@typescript-eslint/eslint-plugin": "^8.61.1",
     "@typescript-eslint/parser": "^8.61.1",
     "@vitest/coverage-v8": "^4.1.0",
