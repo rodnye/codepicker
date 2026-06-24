@@ -3,6 +3,7 @@ import glob from 'fast-glob';
 import path from 'path';
 import ignore from 'ignore';
 import { DEFAULTS_IGNORE_PATTERNS } from '../consts';
+import { toPosix } from './path';
 
 /**
  * Find all ignore files (e.g., .gitignore) in the project
@@ -56,10 +57,11 @@ export const loadIgnoreRules = async (
 
       // Make rules relative to the ignore file's directory
       const dirRelativeRules = rules.map((rule) => {
-        if (rule.startsWith('!')) {
-          return `!${path.join(ignoreDir, rule.slice(1))}`;
-        }
-        return path.join(ignoreDir, rule);
+        const isNegated = rule.startsWith('!');
+        const cleanRule = isNegated ? rule.slice(1) : rule;
+        const joined = toPosix(path.join(ignoreDir, cleanRule));
+
+        return isNegated ? `!${joined}` : joined;
       });
 
       allRules.push(...dirRelativeRules);
@@ -101,7 +103,7 @@ export const filterByIgnorePatterns = (files: string[], patterns: string[]) => {
   const ig = ignore().add(patterns);
 
   return files.filter((file) => {
-    const relativePath = path.relative(process.cwd(), file);
+    const relativePath = toPosix(path.relative(process.cwd(), file));
     return !ig.ignores(relativePath);
   });
 };
