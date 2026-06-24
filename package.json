@@ -11,9 +11,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
+    "prepare": "husky && npm run build",
     "prepublishOnly": "npm run build",
     "format": "prettier --write .",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage"
@@ -33,7 +35,6 @@
     "prompt-engineering",
     "prompt-generator",
     "llm-tools",
-    "cli",
     "typescript"
   ],
   "author": "Rodny Estrada<rrodnyestrada1@gmail.com>",
@@ -54,10 +55,22 @@
   },
   "devDependencies": {
     "@types/node": "^25.3.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
     "@vitest/coverage-v8": "^4.1.0",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-security": "^4.0.1",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.8.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "overrides": {
     "picomatch": "2.3.2"
