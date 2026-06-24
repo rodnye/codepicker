@@ -276,8 +276,10 @@ export const main = async () => {
             result.updated.forEach((f) => console.log(`    ~ ${f}`));
           }
           if (result.skipped.length > 0) {
-            console.log(`  Skipped (binary): ${result.skipped.length}`);
-            result.skipped.forEach((f) => console.log(`    - ${f}`));
+            console.log(`  Skipped: ${result.skipped.length}`);
+            result.skipped.forEach((f) =>
+              console.log(`    - ${f.path}: ${f.cause}`),
+            );
           }
         } catch (error: any) {
           console.error('✖ Error:', error.message);

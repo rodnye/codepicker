@@ -1,4 +1,4 @@
-import { writeFile, mkdir, stat, readFile } from 'fs/promises';
+import { writeFile, mkdir, stat } from 'fs/promises';
 import path from 'path';
 
 export interface ParsedFile {
@@ -70,7 +70,7 @@ export const parseCodeBlocks = (input: string): ParsedFile[] => {
 export interface ApplyResult {
   created: string[];
   updated: string[];
-  skipped: string[];
+  skipped: { path: string; cause: string }[];
 }
 
 /**
@@ -80,19 +80,31 @@ export const applyFiles = async (
   files: ParsedFile[],
   baseDir?: string,
 ): Promise<ApplyResult> => {
-  const created: string[] = [];
-  const updated: string[] = [];
-  const skipped: string[] = [];
+  const created: ApplyResult['created'] = [];
+  const updated: ApplyResult['updated'] = [];
+  const skipped: ApplyResult['skipped'] = [];
+
+  const resolvedBase = path.resolve(baseDir || process.cwd());
 
   for (const file of files) {
-    const fullPath = baseDir
-      ? path.join(baseDir, file.filePath)
-      : file.filePath;
+    const fullPath = path.resolve(resolvedBase, file.filePath);
+
+    // path Traversal Protection
+    if (
+      !fullPath.startsWith(resolvedBase + path.sep) &&
+      fullPath !== resolvedBase
+    ) {
+      skipped.push({
+        path: file.filePath,
+        cause: 'path traversal blocked',
+      });
+      continue;
+    }
+
     const dir = path.dirname(fullPath);
 
     if (file.isBinary) {
-      // is binary file, skip then
-      skipped.push(fullPath);
+      skipped.push({ path: fullPath, cause: 'is binary' });
       continue;
     }
 
