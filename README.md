@@ -1,7 +1,7 @@
 > **Stop copying files into ChatGPT one by one...**
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/rodnye/codepicker/refs/heads/main/website/static/logo.png" width="200">
+  <img src="https://raw.githubusercontent.com/rodnye/codepicker/refs/heads/main/website/static/img/logo.png" width="200">
 
   <h1>codepicker 👌🏻</h1>
 </div>
