@@ -3,21 +3,25 @@ import { mkdtemp, rm } from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
+let isGit = true; // is git installed?
+
 /**
  * Checks that Git is installed by running `git --version`.
  * Throws if Git is not found or fails.
  */
 export const checkGitInstalled = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const child = spawn('git', ['--version'], { stdio: 'ignore' });
-    child.on('error', (err) => {
-      reject(new Error(`Git is not installed or not in PATH: ${err.message}`));
+    child.on('error', () => {
+      console.warn('Git is not installed. Try with `npx isomorphic-git`');
+      isGit = false;
     });
     child.on('close', (code) => {
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`Git command failed with code ${code}`));
+        console.warn(`Git command failed with code ${code}`);
+        isGit = false;
       }
     });
   });
@@ -33,14 +37,33 @@ export const cloneRepository = async (
 ): Promise<string> => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'codepick-remote-'));
 
-  const args = ['clone', '--depth', '1'];
-  if (branch) {
-    args.push('--branch', branch);
-  }
-  args.push(url, tempDir);
-
   await new Promise<void>((resolve, reject) => {
-    const child = spawn('git', args, { stdio: 'inherit' });
+    const child = isGit
+      ? spawn(
+          'git',
+          [
+            'clone',
+            ...['--depth', '1'],
+            ...(branch ? ['--branch', branch] : []),
+            url,
+            tempDir,
+          ],
+          { stdio: 'inherit' },
+        )
+      : // if git not installed, use isomorphic-git cli
+        spawn(
+          'npx',
+          [
+            'isomorphic-git',
+            'clone',
+            '--url=' + url,
+            '--dir=' + tempDir,
+            ...(branch ? ['--ref=' + branch] : []),
+            'depth=1',
+            'singleBranch=true',
+          ],
+          { stdio: 'inherit' },
+        );
     child.on('error', (err) => {
       reject(new Error(`Failed to execute git: ${err.message}`));
     });
