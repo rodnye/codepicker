@@ -1,34 +1,8 @@
 import { Command } from 'commander';
 import { version } from '../package.json';
-import { readFile, stat } from 'fs/promises';
-import glob from 'fast-glob';
-import path from 'path';
 import clipboard from 'clipboardy';
-import { isBinaryFile } from './utils/binary';
-import { addLineNumbers, formatSizeInMB } from './utils/pipes';
-import { filterByIgnoreFile, filterByIgnorePatterns } from './utils/ignore';
+import { pickFiles, PickOptions } from './pick';
 import { applyFiles, parseCodeBlocks } from './apply';
-import { DEFAULTS_IGNORE_PATTERNS } from './consts';
-import {
-  checkGitInstalled,
-  cloneRepository,
-  cleanupTempDir,
-} from './utils/git';
-
-interface GatherOptions {
-  paths?: boolean; // --paths
-  absolute?: boolean; // -a, --absolute
-  clipboard?: boolean; // -c, --clipboard
-  lines?: number; // -l, --lines
-  includeDocs?: boolean; // -D, --include-docs
-  includeLineNumbers?: boolean; // --include-line-numbers
-  gitignore?: boolean; // --no-gitignore
-  codeignore?: boolean; // --no-codeignore
-  dotIgnore?: boolean; // --no-dot-ignore
-  defaultPatterns?: boolean; // --no-default-patterns
-  remote?: string; // --remote
-  remoteBranch?: string; // --remote-branch
-}
 
 export const main = async () => {
   const program = new Command();
@@ -40,7 +14,7 @@ export const main = async () => {
     )
     .version(version);
 
-  // Pick subcommand
+  // Pick subcommand (default)
   program
     .command('pick', { isDefault: true })
     .description('Pick defined files in glob patterns and print into Markdown.')
@@ -84,124 +58,57 @@ export const main = async () => {
       '--remote-branch <branch>',
       'Branch, tag, or commit to checkout after cloning (default: default branch)',
     )
-    .action(async (patterns: string[], options: GatherOptions) => {
-      let tempDir: string | null = null;
-      const originalCwd = process.cwd();
+    .action(
+      async (
+        patterns: string[],
+        options: {
+          paths?: boolean; // --paths
+          absolute?: boolean; // -a, --absolute
+          clipboard?: boolean; // -c, --clipboard
+          lines?: number; // -l, --lines
+          includeDocs?: boolean; // -D, --include-docs
+          includeLineNumbers?: boolean; // --include-line-numbers
+          gitignore?: boolean; // --no-gitignore
+          codeignore?: boolean; // --no-codeignore
+          dotIgnore?: boolean; // --no-dot-ignore
+          defaultPatterns?: boolean; // --no-default-patterns
+          remote?: string; // --remote
+          remoteBranch?: string; // --remote-branch
+        },
+      ) => {
+        try {
+          const pickOptions: PickOptions = {
+            patterns,
+            absolute: options.absolute,
+            lines: options.lines,
+            includeLineNumbers: options.includeLineNumbers,
+            includeDocs: options.includeDocs,
+            gitignore: options.gitignore,
+            codeignore: options.codeignore,
+            dotIgnore: options.dotIgnore,
+            defaultPatterns: options.defaultPatterns,
+            remote: options.remote,
+            remoteBranch: options.remoteBranch,
+          };
 
-      try {
-        // If --remote is specified, check Git and clone
-        if (options.remote) {
-          await checkGitInstalled();
-          tempDir = await cloneRepository(options.remote, options.remoteBranch);
-          process.chdir(tempDir);
-        }
+          const output = await pickFiles(pickOptions);
 
-        if (patterns.length === 0) {
-          throw new Error('Provide at least one glob pattern.');
-        }
-
-        // Expand glob
-        let files = await glob(patterns, {
-          onlyFiles: true,
-          dot: true,
-          absolute: false,
-        });
-
-        if (files.length === 0) {
-          throw new Error('No files matched the given patterns.');
-        }
-
-        // Apply default filtering
-        if (options.defaultPatterns) {
-          files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
-          if (files.length === 0) {
-            throw new Error(
-              'No files remained after applying default codepicker rules.\n' +
-                '  Try using --no-default-patterns to force including these files.',
-            );
-          }
-        }
-
-        // Apply .gitignore filtering
-        if (options.gitignore) {
-          files = await filterByIgnoreFile(files, '.gitignore');
-          if (files.length === 0) {
-            throw new Error(
-              'No files remained after applying .gitignore rules.\n' +
-                '  Try using --no-gitignore to force including these files.',
-            );
-          }
-        }
-
-        // Apply .ignore filtering
-        if (options.dotIgnore) {
-          files = await filterByIgnoreFile(files, '.ignore');
-          if (files.length === 0) {
-            throw new Error(
-              'No files remained after applying .ignore rules.\n' +
-                '  Try using --no-dot-ignore to force including these files.',
-            );
-          }
-        }
-
-        // Apply .codeignore filtering
-        if (options.codeignore) {
-          files = await filterByIgnoreFile(files, '.codeignore');
-          if (files.length === 0) {
-            throw new Error(
-              'No files remained after applying .codeignore rules.\n' +
-                '  Try using --no-codeignore to force including these files.',
-            );
-          }
-        }
-
-        let output = '';
-
-        for (const file of files) {
-          if (!options.paths) {
-            const displayPath = options.absolute
-              ? path.join(process.cwd(), file)
-              : file;
-            output += await getFileContent(
-              displayPath,
-              options.lines,
-              options.includeLineNumbers,
-            );
+          if (options.clipboard) {
+            try {
+              await clipboard.write(output);
+              console.log('✔ Copied to clipboard successfully.');
+            } catch (error) {
+              throw new Error(`Error copying to clipboard: ${error}`);
+            }
           } else {
-            const displayPath = options.absolute
-              ? path.join(process.cwd(), file)
-              : file;
-            output += displayPath + '\n';
+            console.log(output);
           }
+        } catch (error: any) {
+          console.error('✖ Error:', error.message);
+          process.exitCode = 1;
         }
-
-        if (options.includeDocs) {
-          const docPath = path.join(__dirname, '../CODEPICK_FORMAT.md');
-          const docContent = await readFile(docPath, 'utf-8');
-          output += '\n\n---\n\n';
-          output += docContent;
-        }
-
-        if (options.clipboard) {
-          try {
-            await clipboard.write(output.trim());
-            console.log('✔ Copied to clipboard successfully.');
-          } catch (error) {
-            throw new Error(`Error copying to clipboard: ${error}`);
-          }
-        } else {
-          console.log(output.trim());
-        }
-      } catch (error: any) {
-        console.error('✖ Error:', error.message);
-        process.exitCode = 1;
-      } finally {
-        if (tempDir) {
-          process.chdir(originalCwd);
-          await cleanupTempDir(tempDir);
-        }
-      }
-    });
+      },
+    );
 
   // Apply subcommand
   program
@@ -243,6 +150,7 @@ export const main = async () => {
                 'No input file provided. Use --clipboard if you want to use the clipboard.',
               );
             }
+            const { readFile } = await import('fs/promises');
             content = await readFile(inputFile, 'utf-8');
           }
 
@@ -289,82 +197,4 @@ export const main = async () => {
     );
 
   await program.parseAsync(process.argv);
-};
-
-/**
- * Find the maximum number of consecutive backticks in a string
- */
-export const findMaxConsecutiveBackticks = (str: string): number => {
-  const matches = str.match(/`+/g);
-  if (!matches) return 0;
-  return Math.max(...matches.map((m) => m.length));
-};
-
-/**
- * Get file content with markdown format
- * @param filePath - The path to the file
- * @param maxLines - The number of lines to show. If you not provide a number of lines it will show the full file content.
- * @param showLineNumbers - Whether to show line numbers
- * @returns The file content with markdown format
- */
-export const getFileContent = async (
-  filePath: string,
-  maxLines?: number,
-  showLineNumbers?: boolean,
-): Promise<string> => {
-  try {
-    const fileBuffer = await readFile(filePath);
-
-    if (isBinaryFile(fileBuffer)) {
-      // is binary!! not show content
-      const stats = await stat(filePath);
-      const fileSize = stats.size;
-      const extension = path.extname(filePath).replace('.', '');
-      const sizeFormatted = formatSizeInMB(fileSize);
-
-      return (
-        '```' +
-        extension +
-        '\n' +
-        `// ${filePath}\n` +
-        `// [BINARY FILE] - Size: ${sizeFormatted}\n` +
-        '```\n\n'
-      );
-    }
-
-    // is text file!! proceed with normal processing
-    const content = fileBuffer.toString('utf-8');
-    const lines = content.split('\n');
-
-    // maxLines if exists
-    const linesToShow = maxLines ? lines.slice(0, maxLines) : lines;
-    let contentToShow = linesToShow.join('\n');
-
-    if (showLineNumbers)
-      contentToShow = addLineNumbers(linesToShow.join('\n'), 1);
-
-    const extension = path.extname(filePath).replace('.', '');
-    const maxBackticks = findMaxConsecutiveBackticks(content);
-    const wrapper = '`'.repeat(Math.max(3, maxBackticks + 1));
-
-    const truncation =
-      maxLines && lines.length > maxLines
-        ? `\n// ... (${lines.length - maxLines} more lines truncated)`
-        : '';
-
-    return (
-      wrapper +
-      extension +
-      '\n' +
-      `// ${filePath}\n\n` +
-      contentToShow +
-      truncation +
-      '\n' +
-      wrapper +
-      '\n\n'
-    );
-  } catch (e) {
-    console.error(`Error reading file ${filePath}:`, e);
-    return '';
-  }
 };

@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "packageManager": "pnpm@10.0.0",
   "bin": {
-    "codepicker": "bin/codepicker.cjs",
-    "codep": "bin/codepicker.cjs"
+    "codepicker": "dist/index.js",
+    "codep": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -17,7 +17,10 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "web:dev": "pnpm -F ./website dev",
+    "web:build": "pnpm -F ./website build",
+    "web:start": "pnpm -F ./website start"
   },
   "files": [
     "dist/**/*.js",
@@ -25,6 +28,12 @@
     "bin/*",
     "CODEPICK_FORMAT.md"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "keywords": [
     "glob",
     "cli",
