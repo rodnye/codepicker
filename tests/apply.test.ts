@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { writeFile, mkdir, stat, readFile } from 'fs/promises';
+import { writeFile, mkdir, stat } from 'fs/promises';
+import path from 'path';
 import { parseCodeBlocks, applyFiles } from '../src/apply';
 
 vi.mock('fs/promises');
@@ -73,9 +74,10 @@ And more ${bt(4)}more code${bt(4)}
   });
 
   it('identifies binary files', () => {
-    const input = `${bt(3)}png\n// image.png\n// [BINARY FILE] - Size: 1.000 MB\n${bt(3)}`;
+    const input = `${bt(3)}png\n// image.png\n\n\n// [BINARY FILE] - Size: 1.000 MB\n${bt(3)}`;
 
     const files = parseCodeBlocks(input);
+    console.log(files);
     expect(files).toHaveLength(1);
     expect(files[0].isBinary).toBe(true);
   });
@@ -210,7 +212,6 @@ describe('applyFiles', () => {
         filePath: 'src/index.ts',
         content: 'console.log("hello");',
         isBinary: false,
-        isTruncated: false,
       },
     ];
 
@@ -232,7 +233,6 @@ describe('applyFiles', () => {
         filePath: 'src/index.ts',
         content: 'console.log("updated");',
         isBinary: false,
-        isTruncated: false,
       },
     ];
 
@@ -248,14 +248,13 @@ describe('applyFiles', () => {
         filePath: 'image.png',
         content: '// [BINARY FILE]',
         isBinary: true,
-        isTruncated: false,
       },
     ];
 
     const result = await applyFiles(files);
 
     expect(result.skipped).toHaveLength(1);
-    expect(result.skipped[0]).toContain('image.png');
+    expect(result.skipped[0].path).toContain('image.png');
     expect(writeFile).not.toHaveBeenCalled();
   });
 
@@ -269,7 +268,6 @@ describe('applyFiles', () => {
         filePath: 'large.ts',
         content: 'line1\n// ... (100 more lines truncated)',
         isBinary: false,
-        isTruncated: true,
       },
     ];
 
@@ -288,15 +286,17 @@ describe('applyFiles', () => {
         filePath: 'src/index.ts',
         content: 'content',
         isBinary: false,
-        isTruncated: false,
       },
     ];
 
     await applyFiles(files, '/custom/path');
 
-    expect(mkdir).toHaveBeenCalledWith('/custom/path/src', { recursive: true });
+    expect(mkdir).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('custom', 'path', 'src')),
+      { recursive: true },
+    );
     expect(writeFile).toHaveBeenCalledWith(
-      '/custom/path/src/index.ts',
+      expect.stringContaining(path.join('custom', 'path', 'src', 'index.ts')),
       'content',
       'utf-8',
     );
@@ -312,13 +312,15 @@ describe('applyFiles', () => {
         filePath: 'src/deep/nested/file.ts',
         content: 'content',
         isBinary: false,
-        isTruncated: false,
       },
     ];
 
     await applyFiles(files);
 
-    expect(mkdir).toHaveBeenCalledWith('src/deep/nested', { recursive: true });
+    expect(mkdir).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('src', 'deep', 'nested')),
+      { recursive: true },
+    );
   });
 
   it('handles multiple files with mixed states', async () => {
@@ -334,19 +336,16 @@ describe('applyFiles', () => {
         filePath: 'new.ts',
         content: 'new',
         isBinary: false,
-        isTruncated: false,
       },
       {
         filePath: 'existing.ts',
         content: 'updated',
         isBinary: false,
-        isTruncated: false,
       },
       {
         filePath: 'image.png',
         content: '// [BINARY FILE]',
         isBinary: true,
-        isTruncated: false,
       },
     ];
 

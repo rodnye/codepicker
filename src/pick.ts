@@ -149,9 +149,9 @@ export async function pickFiles(options: PickOptions): Promise<string> {
 }
 
 /**
- * Get file content with markdown format (copied from main.ts but uses cwd)
+ * Get file content with markdown format
  */
-async function getFileContent(
+export async function getFileContent(
   filePath: string,
   maxLines?: number,
   showLineNumbers?: boolean,
