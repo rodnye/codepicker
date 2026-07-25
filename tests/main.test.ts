@@ -1,53 +1,43 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readFile, stat } from 'fs/promises';
+import glob from 'fast-glob';
 import { isBinaryFile } from '../src/utils/binary';
 import { addLineNumbers, formatSizeInMB } from '../src/utils/pipes';
-import { findGitignoreFiles, loadGitignoreRules } from '../src/utils/gitignore';
-import {
-  filterByGitignore,
-  findMaxConsecutiveBackticks,
-  getFileContent,
-  main,
-} from '../src/main';
+import { filterByIgnoreFile } from '../src/utils/ignore';
+import { findMaxConsecutiveBackticks, getFileContent } from '../src/pick';
+import { main } from '../src/main';
 
 vi.mock('fs/promises');
-vi.mock('fast-glob', () => ({ default: async () => [] }));
-vi.mock('clipboardy');
+vi.mock('fast-glob', () => ({ default: vi.fn() }));
+vi.mock('clipboardy', () => ({ default: { read: vi.fn(), write: vi.fn() } }));
 vi.mock('../src/utils/binary');
 vi.mock('../src/utils/pipes');
-vi.mock('../src/utils/gitignore');
 
 describe('filterByGitignore', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  //
   it('returns all files when no gitignore files found', async () => {
-    vi.mocked(findGitignoreFiles).mockResolvedValue([]);
+    vi.mocked(glob).mockResolvedValue([]);
     const files = ['file1.ts', 'file2.ts'];
-    const result = await filterByGitignore(files);
+    const result = await filterByIgnoreFile(files, '.gitignore');
     expect(result).toEqual(files);
   });
 
-  //
   it('filters files based on gitignore rules', async () => {
-    vi.mocked(findGitignoreFiles).mockResolvedValue(['.gitignore']);
-    vi.mocked(loadGitignoreRules).mockResolvedValue(['node_modules']);
-
-    const mockIg = { ignores: vi.fn().mockReturnValue(true) };
-    vi.doMock('ignore', () => () => mockIg);
+    vi.mocked(glob).mockResolvedValue(['.gitignore']);
+    vi.mocked(readFile).mockResolvedValue('node_modules');
 
     const files = ['src/index.ts', 'node_modules/test.js'];
-    const result = await filterByGitignore(files);
-    expect(result).toHaveLength(1);
+    const result = await filterByIgnoreFile(files);
+    expect(result).toEqual(['src/index.ts']);
   });
 
-  //
   it('returns all files when gitignore processing fails', async () => {
-    vi.mocked(findGitignoreFiles).mockRejectedValue(new Error('Failed'));
+    vi.mocked(glob).mockRejectedValue(new Error('Failed'));
     const files = ['file1.ts'];
-    const result = await filterByGitignore(files);
+    const result = await filterByIgnoreFile(files);
     expect(result).toEqual(files);
   });
 });
@@ -73,8 +63,10 @@ describe('getFileContent', () => {
 
   it('returns empty string on file read error', async () => {
     vi.mocked(readFile).mockRejectedValue(new Error('Read error'));
+    const mockError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const result = await getFileContent('test.txt');
     expect(result).toBe('');
+    mockError.mockRestore();
   });
 
   it('handles binary files', async () => {
@@ -133,29 +125,39 @@ describe('getFileContent', () => {
 });
 
 describe('CLI Integration', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    process.exitCode = 0;
+  });
+
   it('exits with error when no patterns provided', async () => {
-    vi.mocked(findGitignoreFiles).mockResolvedValue([]);
-    const mockExit = vi
-      .spyOn(process, 'exit')
-      .mockImplementation(() => undefined as never);
     const mockError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    process.argv = ['node', 'codepicker'];
     await main();
 
-    expect(mockExit).toHaveBeenCalledWith(1);
-    mockExit.mockRestore();
+    expect(process.exitCode).toBe(1);
+    expect(mockError).toHaveBeenCalledWith(
+      '✖ Error:',
+      'Provide at least one glob pattern.',
+    );
+
     mockError.mockRestore();
   });
 
   it('exits with error when no files matched', async () => {
-    vi.mocked(findGitignoreFiles).mockResolvedValue([]);
-    const mockExit = vi
-      .spyOn(process, 'exit')
-      .mockImplementation(() => undefined as never);
+    vi.mocked(glob).mockResolvedValue([]);
     const mockError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    process.argv = ['node', 'codepicker', '**/*.ts'];
     await main();
 
-    expect(mockExit).toHaveBeenCalledWith(1);
-    mockExit.mockRestore();
+    expect(process.exitCode).toBe(1);
+    expect(mockError).toHaveBeenCalledWith(
+      '✖ Error:',
+      'No files matched the given patterns.',
+    );
+
     mockError.mockRestore();
   });
 });
