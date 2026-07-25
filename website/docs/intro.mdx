@@ -1,47 +1,46 @@
 ---
 sidebar_position: 1
+slug: /intro
 ---
 
-# Tutorial Intro
+# Introducción a Codepicker
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**Codepicker** es una herramienta CLI bidireccional que transforma tu base de código en Markdown estructurado, y viceversa. Está diseñada específicamente para hacer que trabajar con Modelos de Lenguaje Grande (LLMs) en proyectos reales sea **rápido, predecible y sin fricciones**.
 
-## Getting Started
+## ¿Por qué Codepicker?
 
-Get started by **creating a new site**.
+Trabajar con chats de LLMs en bases de código existentes suele ser un proceso tedioso:
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+1. Abrir archivos manualmente.
+2. Copiar rutas y contenido.
+3. Pegar en el chat.
+4. Repetir el proceso.
+5. Reconstruir los cambios manualmente.
 
-### What you'll need
+Incluso con agentes de IDE, a menudo estás limitado a su flujo de trabajo específico. **Codepicker** elimina esta fricción, permitiéndote mover el contexto dentro y fuera de tu proyecto con un par de comandos.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Características Principales
 
-## Generate a new site
+- ⚡ **Contexto Instantáneo**: Copia secciones completas del proyecto con el flag `-c`.
+- 🔄 **Flujo Bidireccional**: El comando `apply` convierte Markdown de vuelta a archivos en tu disco.
+- 🧠 **Tolerante al Ruido**: Ignora explicaciones y texto extra, manteniendo solo el código válido.
+- 🛡️ **Envoltorio Inteligente**: Previene bloques de código rotos ajustando el número de comillas invertidas.
+- 🎯 **Controles de Precisión**: Limita líneas, añade números, usa rutas absolutas.
+- 📄 **Modo Documentación (`-D`)**: Ayuda a los LLMs a seguir el formato Codepick correctamente.
+- 📦 **Seguro con Binarios**: Evita volcar contenido ilegible de archivos binarios.
+- 🙈 **Consciente de `.gitignore`**: Respeta tu repositorio por defecto.
 
-Generate a new Docusaurus site using the **classic template**.
+## ¿Cómo funciona?
 
-The classic template will automatically be added to your project after you run the command:
+Codepicker utiliza un formato estructurado llamado **Codepick Format**. Cada archivo se representa como un bloque de código donde la primera línea indica la ruta del sistema de archivos destino.
 
-```bash
-npm init docusaurus@latest my-website classic
+````markdown
+```ts
+// src/index.ts
+console.log('Hola Mundo');
 ```
+````
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+Este formato es perfectamente parseable y, a diferencia de los diffs o formatos de respuesta tradicionales, empaqueta el contenido completo del archivo, eliminando ambigüedades.
 
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Todo en orden? Dirígete a la sección de [Primeros Pasos](/docs/getting-started).

@@ -11,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Extracción sencilla',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Selecciona archivos mediante glob patterns y obtén su contenido
+        formateado en Markdown, listo para usar con tu LLM favorito.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Aplicación bidireccional',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Toma la respuesta de tu LLM en formato Codepick y aplícala directamente
+        a tu proyecto con un solo comando.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Integración con Git y más',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Compatible con repositorios remotos, respeta .gitignore y ofrece
+        opciones avanzadas para controlar la salida.
       </>
     ),
   },
