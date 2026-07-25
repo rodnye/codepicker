@@ -3,52 +3,52 @@ sidebar_position: 6
 slug: /guides/llm-workflow
 ---
 
-# Flujo de Trabajo con LLMs
+# LLM Workflow
 
-Codepicker brilla cuando se integra en tu flujo de trabajo diario con Modelos de Lenguaje Grande (LLMs) como ChatGPT, Claude o Gemini. Aquí te mostramos cómo sacarle el máximo provecho.
+Codepicker shines when integrated into your daily workflow with Large Language Models (LLMs) like ChatGPT, Claude, or Gemini. Here's how to get the most out of it.
 
-## El Problema del Contexto
+## The Context Problem
 
-Los LLMs tienen ventanas de contexto limitadas y a menudo "olvidan" o alucinan rutas de archivos cuando se les pide que modifiquen código.
-Además, copiar y pegar manualmente decenas de archivos es propenso a errores.
+LLMs have limited context windows and often "forget" or hallucinate file paths when asked to modify code.
+Additionally, manually copying and pasting dozens of files is error-prone.
 
-## La Solución: Codepicker
+## The Solution: Codepicker
 
-### Paso 1: Extraer Contexto
+### Step 1: Extract Context
 
-Selecciona los archivos relevantes para tu tarea y cópialos al portapapeles:
+Select the files relevant to your task and copy them to the clipboard:
 
 ```bash
 codep -cD "src/services/**/*.ts" "src/views/**/*.tsx"
 ```
 
-:::info El flag `-D`
-El flag `-D` (o `--include-docs`) es **crucial**. Añade la especificación del formato Codepick al final del prompt. Esto "entrena" al LLM en el momento para que devuelva la respuesta en el formato exacto que `codep apply` puede procesar.
+:::info The `-D` flag
+The `-D` flag (or `--include-docs`) is **crucial**. It adds the Codepick format specification at the end of the prompt. This "trains" the LLM on the spot so it returns the response in the exact format that `codep apply` can process.
 :::
 
-### Paso 2: Interactuar con el LLM
+### Step 2: Interact with the LLM
 
-Pega el contenido en tu LLM y dale instrucciones claras:
+Paste the content into your LLM and give it clear instructions:
 
 ```text
-Aquí está el contexto de mi proyecto.
-Por favor, modifica la vista para añadir un botón azul con sombra moderna.
-IMPORTANTE: Devuelve los archivos modificados usando estrictamente el formato Codepick.
+Here is the context of my project.
+Please modify the view to add a modern blue button with a shadow.
+IMPORTANT: Return the modified files strictly using the Codepick format.
 ```
 
-### Paso 3: Aplicar los Cambios
+### Step 3: Apply the Changes
 
-Una vez que el LLM te devuelva la respuesta, cópiala y ejecuta:
+Once the LLM returns the response, copy it and run:
 
 ```bash
 codep apply -c
 ```
 
-¡Listo! Tus archivos se actualizarán automáticamente en tu sistema de archivos.
+Done! Your files will be automatically updated on your filesystem.
 
-## Consejos para Mejores Resultados
+## Tips for Better Results
 
-1. **Sé específico con los patrones**: No extraigas todo el proyecto si solo necesitas modificar un módulo específico. Esto ahorra tokens y reduce la confusión del LLM.
-2. **Usa `--dry-run`**: Si no estás seguro de los cambios que el LLM propone, usa `codep apply -c --dry-run` para ver qué archivos se verían afectados antes de aplicarlos.
-3. **Controla el tamaño**: Si un archivo es muy grande, usa `-l 100` para limitar las líneas y darle al LLM solo la estructura o las partes relevantes.
-4. **Respeta el `.gitignore`**: Por defecto, Codepicker ignora `node_modules`, `.git`, etc. No uses `--no-gitignore` a menos que sea estrictamente necesario, para evitar saturar el contexto del LLM con archivos irrelevantes.
+1. **Be specific with patterns**: Don't extract the whole project if you only need to modify a specific module. This saves tokens and reduces LLM confusion.
+2. **Use `--dry-run`**: If you're unsure about the changes the LLM proposes, use `codep apply -c --dry-run` to see which files would be affected before applying them.
+3. **Control the size**: If a file is too large, use `-l 100` to limit the lines and give the LLM only the structure or relevant parts.
+4. **Respect `.gitignore`**: By default, Codepicker ignores `node_modules`, `.git`, etc. Don't use `--no-gitignore` unless strictly necessary, to avoid saturating the LLM's context with irrelevant files.

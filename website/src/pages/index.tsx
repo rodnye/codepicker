@@ -20,7 +20,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/intro"
           >
-            Comenzar - 5min ⏱️
+            Get Started - 5min ⏱️
           </Link>
         </div>
       </div>
@@ -35,29 +35,29 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Optimizado para LLMs',
+    title: 'Optimized for LLMs',
     description: (
       <>
-        Diseñado desde cero para trabajar con ChatGPT, Claude y otros LLMs.
-        Extrae contexto y aplica cambios sin ningún agente de código{' '}
+        Designed from the ground up to work with ChatGPT, Claude, and other
+        LLMs. Extract context and apply changes without any code agent.
       </>
     ),
   },
   {
-    title: 'Formato Estructurado',
+    title: 'Structured Format',
     description: (
       <>
-        El formato Codepick garantiza que las rutas y el contenido se mantengan
-        intactos. Sin diffs ambiguos, solo código limpio y aplicable.
+        The Codepick format ensures paths and content remain intact. No
+        ambiguous diffs, just clean, applicable code.
       </>
     ),
   },
   {
-    title: 'Repositorios Remotos',
+    title: 'Remote Repositories',
     description: (
       <>
-        Ideal para tomar contexto de otros proyectos y utilizarlos en tus
-        conversaciones{' '}
+        Ideal for grabbing context from other projects and using it in your
+        conversations.
       </>
     ),
   },
@@ -93,8 +93,8 @@ export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Bienvenido a ${siteConfig.title}`}
-      description="Transforma tu código en Markdown y viceversa. Optimizado para LLMs."
+      title={`Welcome to ${siteConfig.title}`}
+      description="Transform your code into Markdown and vice versa. Optimized for LLMs."
     >
       <HomepageHeader />
       <main>

@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Codepicker',
   tagline:
-    'Transforma tu código en Markdown y viceversa. Optimizado para LLMs.',
+    'Transform your code into Markdown and vice versa. Optimized for LLMs.',
   favicon: 'img/logo.png',
   url: 'https://rodny.is-a.dev',
   baseUrl: '/codepicker',
@@ -14,8 +14,8 @@ const config: Config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
-    defaultLocale: 'es',
-    locales: ['es'],
+    defaultLocale: 'en',
+    locales: ['en', 'es'],
   },
   presets: [
     [
@@ -53,12 +53,16 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Documentación',
+          label: 'Docs',
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/rodnye/codepicker',
           label: 'GitHub',
+          position: 'right',
+        },
+        {
+          type: 'localeDropdown',
           position: 'right',
         },
       ],
@@ -67,15 +71,15 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Documentación',
+          title: 'Docs',
           items: [
-            { label: 'Introducción', to: '/docs/intro' },
-            { label: 'Primeros Pasos', to: '/docs/getting-started' },
-            { label: 'Formato Codepick', to: '/docs/concepts/codepick-format' },
+            { label: 'Introduction', to: '/docs/intro' },
+            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Codepick Format', to: '/docs/concepts/codepick-format' },
           ],
         },
         {
-          title: 'Recursos',
+          title: 'Resources',
           items: [
             { label: 'GitHub', href: 'https://github.com/rodnye/codepicker' },
             {
@@ -89,7 +93,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Codepicker. Construido con Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Codepicker. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

@@ -1,47 +1,47 @@
 ---
-sidebar_position: 6
-title: Preguntas frecuentes
-description: Respuestas a las dudas más comunes sobre Codepicker.
+sidebar_position: 9
+title: FAQ
+description: Answers to the most common questions about Codepicker.
 ---
 
-# Preguntas frecuentes
+# Frequently Asked Questions
 
-## ¿Qué es el formato Codepick?
+## What is the Codepick format?
 
-Es un formato simple basado en Markdown donde cada archivo se representa como un bloque de código con su ruta en la primera línea. Este formato es fácil de leer para humanos y para LLMs, y permite aplicar cambios de forma estructurada.
+It's a simple Markdown-based format where each file is represented as a code block with its path on the first line. This format is easy to read for both humans and LLMs, and allows applying changes in a structured way.
 
-## ¿Puedo usar Codepicker con cualquier LLM?
+## Can I use Codepicker with any LLM?
 
-Sí, cualquier modelo que pueda generar texto en Markdown puede producir salida en formato Codepick. Solo debes indicarle que use ese formato.
+Yes, any model that can generate Markdown text can produce Codepick format output. You just need to tell it to use that format.
 
-## ¿Cómo evito que se incluyan archivos grandes?
+## How do I prevent large files from being included?
 
-Usa la opción `-l, --lines` para limitar el número de líneas por archivo. También puedes excluir archivos con patrones glob negativos, por ejemplo:
+Use the `-l, --lines` option to limit the number of lines per file. You can also exclude files with negative glob patterns, for example:
 
 ```bash
 codepicker "src/**.ts" "!src/**.test.ts"
 ```
 
-## ¿Codepicker respeta .gitignore?
+## Does Codepicker respect .gitignore?
 
-Sí, por defecto respeta las reglas de `.gitignore`. Puedes desactivar este comportamiento con `--no-gitignore`.
+Yes, by default it respects `.gitignore` rules. You can disable this behavior with `--no-gitignore`.
 
-## ¿Puedo usarlo en repositorios remotos sin clonarlos manualmente?
+## Can I use it on remote repositories without cloning them manually?
 
-Sí, usando la opción `--remote <url>`. Codepicker clona el repositorio en un directorio temporal y opera sobre él.
+Yes, using the `--remote <url>` option. Codepicker clones the repository into a temporary directory and operates on it.
 
-## ¿Qué pasa si el LLM devuelve archivos que ya existen?
+## What happens if the LLM returns files that already exist?
 
-Codepicker sobrescribirá los archivos existentes. Si quieres evitar sobrescrituras, usa `--dry-run` primero para ver qué archivos se modificarían.
+Codepicker will overwrite existing files. If you want to avoid overwriting, use `--dry-run` first to see which files would be modified.
 
-## ¿Cómo puedo ver qué archivos se van a aplicar sin hacer cambios?
+## How can I see which files will be applied without making changes?
 
-Usa `codepicker apply -c --dry-run`. Mostrará las rutas y el estado (creado, actualizado, omitido).
+Use `codepicker apply -c --dry-run`. It will show the paths and status (created, updated, skipped).
 
-## ¿Codepicker funciona en Windows?
+## Does Codepicker work on Windows?
 
-Sí, Codepicker está probado en Windows, macOS y Linux.
+Yes, Codepicker is tested on Windows, macOS, and Linux.
 
-## ¿Dónde puedo obtener ayuda adicional?
+## Where can I get additional help?
 
-Puedes abrir un issue en [GitHub](https://github.com/rodnye/codepicker/issues).
+You can open an issue on [GitHub](https://github.com/rodnye/codepicker/issues).

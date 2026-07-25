@@ -3,49 +3,49 @@ sidebar_position: 2
 slug: /getting-started
 ---
 
-# Primeros Pasos
+# Getting Started
 
-Instalar y configurar Codepicker es extremadamente sencillo. Sigue estos pasos para empezar a optimizar tu flujo de trabajo con LLMs.
+Installing and setting up Codepicker is extremely simple. Follow these steps to start optimizing your workflow with LLMs.
 
-## Requisitos Previos
+## Prerequisites
 
-- [Node.js](https://nodejs.org/) versión 18 o superior.
-- Un gestor de paquetes como `npm`, `yarn` o `pnpm`.
+- [Node.js](https://nodejs.org/) version 18 or higher.
+- A package manager like `npm`, `yarn`, or `pnpm`.
 
-## Instalación
+## Installation
 
-Puedes instalar Codepicker globalmente para tenerlo disponible en cualquier proyecto:
+You can install Codepicker globally to make it available in any project:
 
 ```bash
 npm install -g codepicker-tool
 ```
 
-### Verificar la Instalación
+### Verify Installation
 
-Una vez instalado, verifica que todo funcione correctamente comprobando la versión:
+Once installed, verify that everything works correctly by checking the version:
 
 ```bash
 codepicker --version
-# o usando el alias corto
+# or using the short alias
 codep --version
 ```
 
-:::tip Alias Corto
-`codep` es simplemente un alias más corto para `codepicker`. Puedes usarlo para ahorrar tiempo al escribir comandos.
+:::tip Short Alias
+`codep` is simply a shorter alias for `codepicker`. You can use it to save time when typing commands.
 :::
 
-## Tu Primer Uso
+## Your First Use
 
-Vamos a extraer el contexto de algunos archivos TypeScript de tu proyecto y copiarlo al portapapeles:
+Let's extract the context of some TypeScript files from your project and copy them to the clipboard:
 
 ```bash
 codep -c "src/**.ts"
 ```
 
-Esto buscará todos los archivos `.ts` en la carpeta `src`, los convertirá al formato Codepick y los copiará a tu portapapeles. Ahora solo tienes que pegarlos en tu LLM favorito y empezar a trabajar.
+This will search for all `.ts` files in the `src` folder, convert them to the Codepick format, and copy them to your clipboard. Now you just have to paste them into your favorite LLM and start working.
 
-## Siguientes Pasos
+## Next Steps
 
-- Aprende a usar el comando [Pick](/docs/commands/pick) en detalle.
-- Descubre cómo aplicar los cambios con [Apply](/docs/commands/apply).
-- Entiende el [Formato Codepick](/docs/concepts/codepick-format).
+- Learn how to use the [Pick](/docs/commands/pick) command in detail.
+- Discover how to apply changes with [Apply](/docs/commands/apply).
+- Understand the [Codepick Format](/docs/concepts/codepick-format).

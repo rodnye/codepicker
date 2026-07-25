@@ -3,52 +3,54 @@ sidebar_position: 5
 slug: /concepts/codepick-format
 ---
 
-# Formato Codepick
+# Codepick Format
 
-El **Formato Codepick** es una sintaxis estructurada de Markdown diseñada para incrustar contenido de archivos junto con sus rutas de destino.
+The **Codepick Format** is a structured Markdown syntax designed for embedding file contents with their paths.
 
-Este formato es el núcleo de cómo Codepicker se comunica con los LLMs, garantizando que el contexto se preserve y se pueda aplicar de vuelta al sistema de archivos sin ambigüedades.
+This format is the core of how Codepicker communicates with LLMs, ensuring that context is preserved and can be applied back to the filesystem without ambiguities.
 
-## Estructura
+## What is it?
 
-Cada archivo se representa como un bloque de código donde:
+Codepick format is a structured Markdown syntax for embedding file contents with their paths. Each file is represented as a code block where:
 
-1. **Etiqueta de apertura**: 3 o más comillas invertidas seguidas de una extensión de lenguaje opcional.
-2. **Primera línea interna**: `// ruta/del/archivo.ext` (la ruta del sistema de archivos destino).
-3. **Contenido**: El contenido real del archivo (cualquier texto).
-4. **Etiqueta de cierre**: El mismo número de comillas invertidas que en la apertura.
+1. **Opening tag**: 5+ backticks (`) followed by an optional language extension
+2. **First line inside**: `// file/path.ext` (the target filesystem path)
+3. **Content**: The actual file contents (any text)
+4. **Closing tag**: Same number of backticks as opening
 
-## Ejemplo
+## Example
 
-````markdown
 ```ts
 // src/index.ts
-console.log('Hola');
+console.log('Hello');
 ```
 
 ```json
 // config.json
 {
-  "name": "mi-app"
+  "name": "my-app"
 }
 ```
-````
 
-## Reglas del Formato
+```ruby
+// app/controllers/devices/application_controller.rb
+class ApplicationController < ActionController::Base
+    allow_browser versions: :modern
+end
+```
 
-- Las rutas deben comenzar con `// ` (con un espacio después de las barras).
-- La primera línea del bloque de código debe contener **exclusivamente** la ruta (ej. `// src/index.ts`), sin texto adicional, comentarios o caracteres extra.
-- Se soportan bloques de código con diferentes cantidades de comillas invertidas.
-- El texto entre bloques (explicaciones, ruido) es ignorado por el parser.
-- Las líneas vacías dentro de los bloques se preservan.
+## Rules
 
-:::tip Recomendación
-Se recomienda usar **5 o más comillas invertidas** (` ````` `) para envolver los bloques de código y evitar conflictos con bloques de triple comilla anidados dentro del contenido del archivo.
-:::
+- Paths must start with `// ` (space after slashes)
+- The first line of the code block must contain **only and exclusively** the path (e.g., `// src/index.ts`), with no additional text, comments, or characters
+- Code blocks with different backtick counts are supported
+- Text between blocks is ignored (noise allowed)
+- Empty lines inside blocks are preserved
+- It is recommended to use 5 backticks (`) for wrap the code block fences to avoid conflicts with nested triple backticks inside file contents
 
-## Archivos Binarios
+## Binary Files
 
-Los archivos binarios no se vuelcan como bytes crudos. En su lugar, se reemplazan con metadatos:
+Binary files are not dumped as raw bytes. Instead, they are replaced with metadata:
 
 ````markdown
 ```png
@@ -57,4 +59,4 @@ Los archivos binarios no se vuelcan como bytes crudos. En su lugar, se reemplaza
 ```
 ````
 
-Esto evita corromper la salida de Markdown y mantiene el tamaño del contexto bajo control.
+This prevents corrupting the Markdown output and keeps the context size under control.

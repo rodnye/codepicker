@@ -6,19 +6,19 @@ const sidebars: SidebarsConfig = {
     'getting-started',
     {
       type: 'category',
-      label: 'Comandos',
+      label: 'Commands',
       collapsed: false,
       items: ['commands/pick', 'commands/apply'],
     },
     {
       type: 'category',
-      label: 'Conceptos',
+      label: 'Concepts',
       collapsed: false,
       items: ['concepts/codepick-format'],
     },
     {
       type: 'category',
-      label: 'Guías',
+      label: 'Guides',
       collapsed: false,
       items: ['guides/llm-workflow', 'guides/advanced-options'],
     },

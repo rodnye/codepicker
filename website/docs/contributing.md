@@ -1,74 +1,74 @@
 ---
-sidebar_position: 5
-title: Contribuir
-description: Cómo contribuir al desarrollo de Codepicker.
+sidebar_position: 8
+title: Contributing
+description: How to contribute to the development of Codepicker.
 ---
 
-# Contribuir
+# Contributing
 
-¡Gracias por tu interés en contribuir a Codepicker! Apreciamos cualquier tipo de contribución, ya sea reportando errores, mejorando la documentación o enviando código. El poder del Open Source :)
+Thank you for your interest in contributing to Codepicker! We appreciate any kind of contribution, whether it's reporting bugs, improving documentation, or submitting code. The power of Open Source :)
 
-## Reportar errores
+## Reporting Bugs
 
-Si encuentras un error, por favor abre un issue en [GitHub](https://github.com/rodnye/codepicker/issues) con:
+If you find a bug, please open an issue on [GitHub](https://github.com/rodnye/codepicker/issues) with:
 
-- Una descripción clara del problema.
-- Pasos para reproducirlo.
-- Versión de Node.js y del sistema operativo.
-- Si es posible, un ejemplo mínimo.
+- A clear description of the problem.
+- Steps to reproduce it.
+- Node.js and OS version.
+- If possible, a minimal example.
 
-## Mejorar la documentación
+## Improving Documentation
 
-La documentación está en la carpeta `website/docs`. Puedes enviar un Pull Request con tus mejoras.
+The documentation is in the `website/docs` folder. You can submit a Pull Request with your improvements.
 
-## Desarrollo
+## Development
 
-### Clonar el repositorio
+### Clone the repository
 
 ```bash
 git clone https://github.com/rodnye/codepicker.git
 cd codepicker
 ```
 
-### Instalar dependencias
+### Install dependencies
 
 ```bash
 pnpm install
 ```
 
-### Construir el proyecto
+### Build the project
 
 ```bash
 pnpm run build
 ```
 
-### Ejecutar pruebas
+### Run tests
 
 ```bash
 pnpm test
 ```
 
-### Ejecutar el sitio de documentación localmente
+### Run the documentation site locally
 
 ```bash
 pnpm install
 pnpm run web:start
 ```
 
-## Enviar un Pull Request
+## Submitting a Pull Request
 
-1. Haz un fork del repositorio.
-2. Crea una rama para tu cambio (`git checkout -b feat/mi-cambio`).
-3. Realiza los cambios y haz commit.
-4. Asegúrate de que las pruebas pasen.
-5. Envía el Pull Request a la rama `main`.
+1. Fork the repository.
+2. Create a branch for your change (`git checkout -b feat/my-change`).
+3. Make the changes and commit.
+4. Make sure the tests pass.
+5. Submit the Pull Request to the `main` branch.
 
-## Estilo de código
+## Code Style
 
-- Usa TypeScript.
-- Sigue el estilo de código existente (ESLint y Prettier están configurados).
-- Escribe pruebas para nuevas funcionalidades.
+- Use TypeScript.
+- Follow the existing code style (ESLint and Prettier are configured).
+- Write tests for new features.
 
-## Licencia
+## License
 
-Al contribuir, aceptas que tu código será licenciado bajo la [MIT License](https://github.com/rodnye/codepicker/blob/main/LICENSE).
+By contributing, you agree that your code will be licensed under the [MIT License](https://github.com/rodnye/codepicker/blob/main/LICENSE).

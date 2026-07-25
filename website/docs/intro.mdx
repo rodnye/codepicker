@@ -3,44 +3,44 @@ sidebar_position: 1
 slug: /intro
 ---
 
-# Introducción a Codepicker
+# Introduction to Codepicker
 
-**Codepicker** es una herramienta CLI bidireccional que transforma tu base de código en Markdown estructurado, y viceversa. Está diseñada específicamente para hacer que trabajar con Modelos de Lenguaje Grande (LLMs) en proyectos reales sea **rápido, predecible y sin fricciones**.
+**Codepicker** is a bidirectional CLI tool that transforms your codebase into structured Markdown, and vice versa. It is specifically designed to make working with Large Language Models (LLMs) on real-world projects **fast, predictable, and frictionless**.
 
-## ¿Por qué Codepicker?
+## Why Codepicker?
 
-Trabajar con chats de LLMs en bases de código existentes suele ser un proceso tedioso:
+Working with LLM chats on existing codebases is usually a tedious process:
 
-1. Abrir archivos manualmente.
-2. Copiar rutas y contenido.
-3. Pegar en el chat.
-4. Repetir el proceso.
-5. Reconstruir los cambios manualmente.
+1. Open files manually.
+2. Copy paths and content.
+3. Paste into the chat.
+4. Repeat the process.
+5. Reconstruct the changes manually.
 
-Incluso con agentes de IDE, a menudo estás limitado a su flujo de trabajo específico. **Codepicker** elimina esta fricción, permitiéndote mover el contexto dentro y fuera de tu proyecto con un par de comandos.
+Even with IDE agents, you are often limited to their specific workflow. **Codepicker** removes this friction, allowing you to move context in and out of your project with a couple of commands.
 
-## Características Principales
+## Main Features
 
-- ⚡ **Contexto Instantáneo**: Copia secciones completas del proyecto con el flag `-c`.
-- 🔄 **Flujo Bidireccional**: El comando `apply` convierte Markdown de vuelta a archivos en tu disco.
-- 🧠 **Tolerante al Ruido**: Ignora explicaciones y texto extra, manteniendo solo el código válido.
-- 🛡️ **Envoltorio Inteligente**: Previene bloques de código rotos ajustando el número de comillas invertidas.
-- 🎯 **Controles de Precisión**: Limita líneas, añade números, usa rutas absolutas.
-- 📄 **Modo Documentación (`-D`)**: Ayuda a los LLMs a seguir el formato Codepick correctamente.
-- 📦 **Seguro con Binarios**: Evita volcar contenido ilegible de archivos binarios.
-- 🙈 **Consciente de `.gitignore`**: Respeta tu repositorio por defecto.
+- ⚡ **Instant Context**: Copy entire project sections with the `-c` flag.
+- 🔄 **Bidirectional Flow**: The `apply` command converts Markdown back into files on your disk.
+- 🧠 **Noise Tolerant**: Ignores explanations and extra text, keeping only valid code.
+- 🛡️ **Smart Wrapper**: Prevents broken code blocks by adjusting the number of backticks.
+- 🎯 **Precision Controls**: Limit lines, add numbers, use absolute paths.
+- 📄 **Documentation Mode (`-D`)**: Helps LLMs follow the Codepick format correctly.
+- 📦 **Binary Safe**: Avoids dumping illegible content from binary files.
+- 🙈 **`.gitignore` Aware**: Respects your repository by default.
 
-## ¿Cómo funciona?
+## How does it work?
 
-Codepicker utiliza un formato estructurado llamado **Codepick Format**. Cada archivo se representa como un bloque de código donde la primera línea indica la ruta del sistema de archivos destino.
+Codepicker uses a structured format called **Codepick Format**. Each file is represented as a code block where the first line indicates the target filesystem path.
 
 ````markdown
 ```ts
 // src/index.ts
-console.log('Hola Mundo');
+console.log('Hello World');
 ```
 ````
 
-Este formato es perfectamente parseable y, a diferencia de los diffs o formatos de respuesta tradicionales, empaqueta el contenido completo del archivo, eliminando ambigüedades.
+This format is perfectly parseable and, unlike diffs or traditional response formats, it packages the complete file content, eliminating ambiguities.
 
-Todo en orden? Dirígete a la sección de [Primeros Pasos](/docs/getting-started).
+All set? Head over to the [Getting Started](/docs/getting-started) section.

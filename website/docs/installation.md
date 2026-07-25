@@ -1,49 +1,49 @@
 ---
 sidebar_position: 2
-title: Instalación
-description: Cómo instalar Codepicker en tu sistema.
+title: Installation
+description: How to install Codepicker on your system.
 ---
 
-# Instalación
+# Installation
 
-## Requisitos previos
+## Prerequisites
 
-- [Node.js](https://nodejs.org) versión 20 o superior.
-- npm, yarn o pnpm.
+- [Node.js](https://nodejs.org) version 20 or higher.
+- npm, yarn, or pnpm.
 
-## Instalación global (recomendada)
+## Global Installation (Recommended)
 
 ```bash
 npm install -g codepicker-tool
 ```
 
-Después de la instalación, verifica que todo funciona:
+After installation, verify that everything works:
 
 ```bash
 codepicker --version
 ```
 
-También puedes usar el alias `codep`:
+You can also use the `codep` alias:
 
 ```bash
 codep --version
 ```
 
-## Uso con npx (sin instalación)
+## Usage with npx (No Installation)
 
-Si prefieres no instalar globalmente, puedes ejecutar Codepicker directamente con `npx`:
+If you prefer not to install globally, you can run Codepicker directly with `npx`:
 
 ```bash
 npx codepicker-tool pick "src/**/*.ts"
 ```
 
-## Instalación local en un proyecto
+## Local Installation in a Project
 
 ```bash
 npm install --save-dev codepicker-tool
 ```
 
-Luego puedes agregar scripts en tu `package.json`:
+Then you can add scripts in your `package.json`:
 
 ```json
 {
@@ -54,16 +54,16 @@ Luego puedes agregar scripts en tu `package.json`:
 }
 ```
 
-## Actualización
+## Updating
 
-Para actualizar a la última versión:
+To update to the latest version:
 
 ```bash
 npm update -g codepicker-tool
 ```
 
-O si usas `npx`, siempre obtendrás la última versión disponible.
+Or if you use `npx`, you will always get the latest available version.
 
-## Solución de problemas
+## Troubleshooting
 
-Para más ayuda, consulta las [preguntas frecuentes](./faq.md).
+For more help, check the [FAQ](./faq.md).

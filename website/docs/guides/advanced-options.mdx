@@ -3,74 +3,74 @@ sidebar_position: 7
 slug: /guides/advanced-options
 ---
 
-# Opciones Avanzadas
+# Advanced Options
 
-Codepicker ofrece una variedad de opciones avanzadas para adaptar su comportamiento a las necesidades específicas de tu proyecto y tu flujo de trabajo.
+Codepicker offers a variety of advanced options to adapt its behavior to the specific needs of your project and workflow.
 
-## Patrones Glob
+## Glob Patterns
 
-Codepicker utiliza [fast-glob](https://github.com/mrmlnc/fast-glob) para la búsqueda de archivos. Puedes usar patrones avanzados:
+Codepicker uses [fast-glob](https://github.com/mrmlnc/fast-glob) for file searching. You can use advanced patterns:
 
 ```bash
-# Múltiples extensiones
+# Multiple extensions
 codep "src/**.{ts,tsx,astro}"
 
-# Excluir directorios
+# Exclude directories
 codep "src/**/*.ts" "!src/**/*.test.ts"
 
-# Archivos en la raíz
+# Root files
 codep "package.json" "tsconfig.json"
 ```
 
-## Ignorar Archivos
+## Ignoring Files
 
-Por defecto, Codepicker respeta:
+By default, Codepicker respects:
 
 - `.gitignore`
-- `.codeignore` (archivo específico de Codepicker)
+- `.codeignore` (Codepicker specific file)
 - `.ignore`
-- Patrones internos (node_modules, .git, etc.)
+- Internal patterns (node_modules, .git, etc.)
 
-Puedes desactivar cualquiera de estos comportamientos:
+You can disable any of these behaviors:
 
 ```bash
-# Ignorar .gitignore (útil para extraer archivos de build)
+# Ignore .gitignore (useful for extracting build files)
 codep "dist/**/*.js" --no-gitignore --no-default-patterns
 ```
 
-## Repositorios Remotos
+## Remote Repositories
 
-No necesitas clonar un repositorio para extraer su código. Codepicker puede leer directamente desde GitHub, GitLab, etc.:
+You don't need to clone a repository to extract its code. Codepicker can read directly from GitHub, GitLab, etc.:
 
 ```bash
 codep "src/**/*.ts" --remote https://github.com/rodnye/wa-catalog --remote-branch main
 ```
 
-Esto es extremadamente útil para:
+This is extremely useful for:
 
-- Analizar proyectos de código abierto.
-- Dar contexto a un LLM sobre una librería externa.
-- Comparar código entre diferentes ramas o repositorios.
+- Analyzing open-source projects.
+- Giving an LLM context about an external library.
+- Comparing code between different branches or repositories.
 
-## Backups Instantáneos
+## Instant Backups
 
-Puedes usar Codepicker como una herramienta de backup rápida para tu código actual:
+You can use Codepicker as a quick backup tool for your current code:
 
 ```bash
-# Guardar estado actual
+# Save current state
 codep "src/**" > backup.md
 
-# Restaurar en cualquier momento
+# Restore at any time
 codep apply backup.md
 ```
 
-## Integración con Editores
+## Editor Integration
 
-Aunque Codepicker es una CLI, puedes integrarlo en tu editor favorito mediante atajos de teclado o tareas personalizadas.
+Although Codepicker is a CLI, you can integrate it into your favorite editor via keyboard shortcuts or custom tasks.
 
 ### VS Code (tasks.json)
 
-Puedes configurar tareas en `.vscode/tasks.json` para ejecutar Codepicker rápidamente:
+You can configure tasks in `.vscode/tasks.json` to run Codepicker quickly:
 
 ```json
 {

@@ -3,68 +3,68 @@ sidebar_position: 4
 slug: /commands/apply
 ---
 
-# Comando Apply
+# Apply Command
 
-El comando `apply` toma un documento Markdown (o el contenido del portapapeles) y extrae los bloques de código para escribirlos o actualizarlos en tu sistema de archivos.
+The `apply` command takes a Markdown document (or clipboard content) and extracts the code blocks to write or update them on your filesystem.
 
-## Sintaxis Básica
+## Basic Syntax
 
 ```bash
-codepicker apply [opciones] [archivo-dump]
+codepicker apply [options] [dump-file]
 ```
 
-## Opciones Disponibles
+## Available Options
 
-| Opción             | Descripción                                                                     |
+| Option             | Description                                                                     |
 | ------------------ | ------------------------------------------------------------------------------- |
-| `[archivo-dump]`   | Archivo Markdown que contiene los bloques de código.                            |
-| `-c, --clipboard`  | Lee los bloques de código desde el portapapeles en lugar de un archivo.         |
-| `-d, --dir <path>` | Directorio base donde escribir los archivos (por defecto el directorio actual). |
-| `--dry-run`        | Previsualiza los cambios sin escribir nada en el disco.                         |
+| `[dump-file]`      | Markdown file containing the code blocks.                                       |
+| `-c, --clipboard`  | Reads the code blocks from the clipboard instead of a file.                     |
+| `-d, --dir <path>` | Base directory where files will be written (defaults to the current directory). |
+| `--dry-run`        | Previews the changes without writing anything to disk.                          |
 
-## Flujo de Trabajo Típico
+## Typical Workflow
 
-1. **El LLM genera código**: Tu LLM te devuelve una respuesta en formato Codepick.
-2. **Copias la respuesta**: Seleccionas y copias el bloque de código completo de la respuesta del LLM.
-3. **Aplicas los cambios**:
+1. **The LLM generates code**: Your LLM returns a response in Codepick format.
+2. **You copy the response**: You select and copy the complete code block from the LLM's response.
+3. **You apply the changes**:
    ```bash
    codep apply -c
    ```
 
-## Ejemplos Prácticos
+## Practical Examples
 
-### Aplicar desde el Portapapeles
+### Apply from Clipboard
 
 ```bash
 codep apply -c
 ```
 
-### Aplicar desde un Archivo
+### Apply from a File
 
-Si guardaste la respuesta del LLM en un archivo:
+If you saved the LLM's response in a file:
 
 ```bash
 codep apply response.md
 ```
 
-### Previsualizar Cambios (Dry Run)
+### Preview Changes (Dry Run)
 
-Antes de sobrescribir archivos, puedes ver qué archivos se crearán o actualizarán:
+Before overwriting files, you can see which files will be created or updated:
 
 ```bash
 codep apply -c --dry-run
 ```
 
-### Aplicar en un Directorio Específico
+### Apply in a Specific Directory
 
-Útil si quieres aplicar los cambios en una rama diferente o un directorio de pruebas:
+Useful if you want to apply changes in a different branch or a test directory:
 
 ```bash
 codep apply -c -d ./test-environment
 ```
 
-## Manejo de Respuestas "Sucias"
+## Handling "Dirty" Responses
 
-Una de las grandes ventajas de `apply` es su **tolerancia al ruido**.
+One of the great advantages of `apply` is its **noise tolerance**.
 
-Si la respuesta del LLM incluye explicaciones, texto introductorio o comentarios fuera de los bloques de código, **Codepicker los ignorará de forma segura**. Solo se extraerá y escribirá el código válido que esté dentro de los bloques de código correctamente formateados.
+If the LLM's response includes explanations, introductory text, or comments outside the code blocks, **Codepicker will safely ignore them**. Only the valid code that is inside correctly formatted code blocks will be extracted and written.
