@@ -189,7 +189,7 @@ export async function getFileContent(
 
     const extension = path.extname(filePath).replace('.', '');
     const maxBackticks = findMaxConsecutiveBackticks(content);
-    const wrapper = '`'.repeat(Math.max(3, maxBackticks + 1));
+    const wrapper = '`'.repeat(Math.max(5, maxBackticks + 1));
 
     const truncation =
       maxLines && lines.length > maxLines
