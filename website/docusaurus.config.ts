@@ -6,9 +6,9 @@ const config: Config = {
   title: 'Codepicker',
   tagline:
     'Transforma tu código en Markdown y viceversa. Optimizado para LLMs.',
-  favicon: 'img/favicon.ico',
-  url: 'https://codepicker.dev',
-  baseUrl: '/',
+  favicon: 'img/logo.png',
+  url: 'https://rodny.is-a.dev',
+  baseUrl: '/codepicker',
   organizationName: 'rodnye',
   projectName: 'codepicker',
   onBrokenLinks: 'throw',
@@ -36,9 +36,9 @@ const config: Config = {
     ],
   ],
   themeConfig: {
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/logo.png',
     colorMode: {
-      defaultMode: 'dark',
+      defaultMode: 'light',
       disableSwitch: false,
       respectPrefersColorScheme: true,
     },
@@ -46,7 +46,7 @@ const config: Config = {
       title: 'Codepicker',
       logo: {
         alt: 'Codepicker Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.png',
       },
       items: [
         {

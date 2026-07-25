@@ -30,24 +30,21 @@ function HomepageHeader() {
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
     title: 'Optimizado para LLMs',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
         Diseñado desde cero para trabajar con ChatGPT, Claude y otros LLMs.
-        Extrae contexto y aplica cambios de forma bidireccional sin fricciones.
+        Extrae contexto y aplica cambios sin ningún agente de código{' '}
       </>
     ),
   },
   {
     title: 'Formato Estructurado',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
         El formato Codepick garantiza que las rutas y el contenido se mantengan
@@ -56,23 +53,20 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: 'Tolerante al Ruido',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Repositorios Remotos',
     description: (
       <>
-        ¿El LLM añadió explicaciones extra? No hay problema. Codepicker ignora
-        el texto innecesario y extrae únicamente los bloques de código válidos.
+        Ideal para tomar contexto de otros proyectos y utilizarlos en tus
+        conversaciones{' '}
       </>
     ),
   },
 ];
 
-function Feature({ title, Svg, description }: FeatureItem) {
+function Feature({ title, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
+      <div className="text--center"></div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
         <p>{description}</p>
