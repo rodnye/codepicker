@@ -13,7 +13,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/es' },
-      { text: 'Guías', link: '/es/getting-started' },
+      { text: 'Guías', link: '/es/02_getting-started' },
     ],
     sidebar: {
       '/es/': [
@@ -49,7 +49,7 @@ export default defineConfig({
               text: 'Flujo de Trabajo con LLMs',
               link: '/es/guides/llm-workflow',
             },
-            { text: 'Scripting e instalación', link: '/es/installation' },
+            { text: 'Scripting e instalación', link: '/es/guides/installation' },
           ],
         },
       ],

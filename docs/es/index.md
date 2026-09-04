@@ -9,10 +9,10 @@ hero:
   actions:
     - theme: brand
       text: Bienvenida
-      link: /es/intro
+      link: /es/01_intro
     - theme: alt
       text: Primeros pasos
-      link: /es/getting-started
+      link: /es/02_getting-started
 
 features:
   - title: Optimizado para IA
