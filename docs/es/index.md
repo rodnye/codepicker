@@ -8,7 +8,7 @@ hero:
   tagline: Hay muchas formas de trabajar y programar con IA, ¿por qué no intentas con esta?
   actions:
     - theme: brand
-      text: Bienvenida
+      text: Ver más
       link: /es/01_intro
     - theme: alt
       text: Primeros pasos

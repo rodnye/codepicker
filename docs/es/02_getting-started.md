@@ -11,15 +11,36 @@ Instalar y configurar Codepicker es extremadamente sencillo. Sigue estos pasos p
 
 Puedes instalar Codepicker globalmente para tenerlo disponible en cualquier proyecto:
 
-```bash
-npm install -g codepicker-tool
+::: code-group
+
+```sh [npm]
+$ npm install -g codepicker-tool
 ```
+
+```sh [pnpm]
+$ pnpm add -g codepicker-tool
+```
+
+```sh [yarn]
+# Para Yarn >=2.x no existe este comando, por favor revisar uso directo con `yarn dlx` más adelante
+yarn global add codepicker-tool
+```
+
+```sh [bun]
+$ bun add -g codepicker-tool
+```
+
+```sh [deno]
+$ deno install -g codepicker-tool
+```
+
+:::
 
 ### Verificar la Instalación
 
 Una vez instalado, verifica que todo funcione correctamente comprobando la versión:
 
-```bash
+```sh
 codepicker --version
 # o usando el alias corto
 codep --version
@@ -33,7 +54,7 @@ codep --version
 
 Vamos a extraer el contexto de algunos archivos TypeScript de tu proyecto y copiarlo al portapapeles:
 
-```bash
+```sh
 codep -c "src/**.ts"
 ```
 

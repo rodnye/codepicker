@@ -49,7 +49,10 @@ export default defineConfig({
               text: 'Flujo de Trabajo con LLMs',
               link: '/es/guides/llm-workflow',
             },
-            { text: 'Scripting e instalación', link: '/es/guides/installation' },
+            {
+              text: 'Scripting e instalación',
+              link: '/es/guides/installation',
+            },
           ],
         },
       ],

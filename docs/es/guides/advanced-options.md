@@ -28,16 +28,16 @@ Por defecto, Codepicker respeta:
 
 Puedes desactivar cualquiera de estos comportamientos:
 
-```bash
+```sh
 # Ignorar .gitignore (útil para extraer archivos de build)
-codep "dist/**/*.js" --no-gitignore --no-default-patterns
+$ codep "dist/**/*.js" --no-gitignore --no-default-patterns
 ```
 
 ## Repositorios Remotos
 
 No necesitas clonar un repositorio para extraer su código. Codepicker puede leer directamente desde GitHub, GitLab, etc.:
 
-```bash
+```sh
 codep "src/**/*.ts" --remote https://github.com/rodnye/wa-catalog --remote-branch main
 ```
 
@@ -51,7 +51,7 @@ Esto es extremadamente útil para:
 
 Puedes usar Codepicker como una herramienta de backup rápida para tu código actual:
 
-```bash
+```sh
 # Guardar estado actual
 codep "src/**" > backup.md
 

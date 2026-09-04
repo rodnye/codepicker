@@ -9,11 +9,13 @@ Además, copiar y pegar manualmente decenas de archivos es propenso a errores.
 
 ## La Solución: Codepicker
 
+> Puedes revisar este [Ejemplo práctico](../usage-example)
+
 ### Paso 1: Extraer Contexto
 
 Selecciona los archivos relevantes para tu tarea y cópialos al portapapeles:
 
-```bash
+```sh
 codep -cD "src/services/**/*.ts" "src/views/**/*.tsx"
 ```
 
@@ -35,7 +37,7 @@ IMPORTANTE: Devuelve los archivos modificados usando estrictamente el formato Co
 
 Una vez que el LLM te devuelva la respuesta, cópiala y ejecuta:
 
-```bash
+```sh
 codep apply -c
 ```
 

@@ -15,6 +15,8 @@
 - 📦 **Seguro con Binarios**: Evita volcar contenido ilegible de archivos binarios.
 - 🙈 **Consciente de `.gitignore`**: Respeta tu repositorio por defecto.
 
+## ¿Por qué usar Codepicker?
+
 Trabajar con chats de LLMs en bases de código existentes suele ser un proceso tedioso:
 
 1. Abrir archivos manualmente.
@@ -37,7 +39,7 @@ Esto no ocurre con CODEPICKER, cuando la IA te dice el contenido a cambiar de un
 
 ## ¿Cómo funciona?
 
-Codepicker utiliza un formato estructurado llamado **Codepick Format**. Cada archivo se representa como un bloque de código donde la primera línea indica la ruta del sistema de archivos destino.
+Codepicker utiliza un formato estructurado llamado [**Codepick Format**](./concepts/codepick-format). Cada archivo se representa como un bloque de código donde la primera línea indica la ruta del sistema de archivos destino.
 
 ````markdown
 ```ts
