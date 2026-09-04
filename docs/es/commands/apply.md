@@ -1,0 +1,67 @@
+# Comando Apply
+
+El comando `apply` toma un documento Markdown (o el contenido del portapapeles) y extrae los bloques de código para escribirlos o actualizarlos en tu sistema de archivos.
+
+## Sintaxis Básica
+
+```bash
+codepicker apply [opciones] [archivo-dump]
+```
+
+## Opciones Disponibles
+
+| Opción             | Descripción                                                                     |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `[archivo-dump]`   | Archivo Markdown que contiene los bloques de código.                            |
+| `-c, --clipboard`  | Lee los bloques de código desde el portapapeles en lugar de un archivo.         |
+| `-d, --dir <path>` | Directorio base donde escribir los archivos (por defecto el directorio actual). |
+| `--dry-run`        | Previsualiza los cambios sin escribir nada en el disco.                         |
+
+## Flujo de Trabajo Típico
+
+1. **El LLM genera código**: Tu LLM te devuelve una respuesta en formato Codepick.
+2. **Copias la respuesta**: Seleccionas y copias el bloque de código completo de la respuesta del LLM.
+3. **Aplicas los cambios**:
+   ```bash
+   codep apply -c
+   ```
+
+> Puedes hechar un vistazo a este [Ejemplo práctico](../usage-example)
+
+## Ejemplos Prácticos
+
+### Aplicar desde el Portapapeles
+
+```bash
+codep apply -c
+```
+
+### Aplicar desde un Archivo
+
+Si guardaste la respuesta del LLM en un archivo:
+
+```bash
+codep apply response.md
+```
+
+### Previsualizar Cambios (Dry Run)
+
+Antes de sobrescribir archivos, puedes ver qué archivos se crearán o actualizarán:
+
+```bash
+codep apply -c --dry-run
+```
+
+### Aplicar en un Directorio Específico
+
+Útil si quieres aplicar los cambios en una rama diferente o un directorio de pruebas:
+
+```bash
+codep apply -c -d ./test-environment
+```
+
+## Manejo de Respuestas "Sucias"
+
+Una de las grandes ventajas de `apply` es su **tolerancia al ruido**.
+
+Si la respuesta del LLM incluye explicaciones, texto introductorio o comentarios fuera de los bloques de código, **Codepicker los ignorará de forma segura**. Solo se extraerá y escribirá el código válido que esté dentro de los bloques de código correctamente formateados.

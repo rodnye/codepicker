@@ -18,9 +18,9 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
-    "web:dev": "pnpm -F ./website dev",
-    "web:build": "pnpm -F ./website build",
-    "web:start": "pnpm -F ./website start"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "files": [
     "dist/**/*.js",
@@ -70,6 +70,7 @@
     "prettier": "^3.8.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.0"
   },
   "overrides": {

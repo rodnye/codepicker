@@ -1,0 +1,85 @@
+# Opciones Avanzadas
+
+Codepicker ofrece una variedad de opciones avanzadas para adaptar su comportamiento a las necesidades específicas de tu proyecto y tu flujo de trabajo.
+
+## Patrones Glob
+
+Codepicker utiliza [fast-glob](https://github.com/mrmlnc/fast-glob) para la búsqueda de archivos. Puedes usar patrones avanzados:
+
+```bash
+# Múltiples extensiones
+codep "src/**.{ts,tsx,astro}"
+
+# Excluir directorios
+codep "src/**/*.ts" "!src/**/*.test.ts"
+
+# Archivos en la raíz
+codep "package.json" "tsconfig.json"
+```
+
+## Ignorar Archivos
+
+Por defecto, Codepicker respeta:
+
+- `.gitignore`
+- `.codeignore` (archivo específico de Codepicker)
+- `.ignore`
+- Patrones internos (node_modules, .git, etc.)
+
+Puedes desactivar cualquiera de estos comportamientos:
+
+```bash
+# Ignorar .gitignore (útil para extraer archivos de build)
+codep "dist/**/*.js" --no-gitignore --no-default-patterns
+```
+
+## Repositorios Remotos
+
+No necesitas clonar un repositorio para extraer su código. Codepicker puede leer directamente desde GitHub, GitLab, etc.:
+
+```bash
+codep "src/**/*.ts" --remote https://github.com/rodnye/wa-catalog --remote-branch main
+```
+
+Esto es extremadamente útil para:
+
+- Analizar proyectos de código abierto.
+- Dar contexto a un LLM sobre una librería externa.
+- Comparar código entre diferentes ramas o repositorios.
+
+## Backups Instantáneos
+
+Puedes usar Codepicker como una herramienta de backup rápida para tu código actual:
+
+```bash
+# Guardar estado actual
+codep "src/**" > backup.md
+
+# Restaurar en cualquier momento
+codep apply backup.md
+```
+
+## Integración con Editores
+
+Aunque Codepicker es una CLI, puedes integrarlo en tu editor favorito mediante atajos de teclado o tareas personalizadas.
+
+### VS Code (tasks.json)
+
+Puedes configurar tareas en `.vscode/tasks.json` para ejecutar Codepicker rápidamente:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Codepicker: Copy Context",
+      "type": "shell",
+      "command": "codep -cD \"src/**/*.ts\"",
+      "group": "none",
+      "presentation": {
+        "reveal": "silent"
+      }
+    }
+  ]
+}
+```
