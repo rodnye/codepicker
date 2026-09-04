@@ -48,7 +48,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build website
-        run: pnpm web:build
+        run: pnpm docs:build
         env:
           URL: https://rodnye.github.io
           BASE_URL: /codepicker/
