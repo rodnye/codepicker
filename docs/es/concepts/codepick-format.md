@@ -34,14 +34,12 @@ Cada archivo se representa como un bloque de código donde:
 
 ````markdown [codepick-output.md]
 // [!code ++]
-
 ```ts
 // src/index.ts
 console.log('Hola');
 ```
 
 // [!code ++]
-
 ```json
 // config.json
 {
