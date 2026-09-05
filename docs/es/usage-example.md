@@ -47,11 +47,11 @@ Esto hace que se copie en nuestro portapapeles el contenido del proyecto entero.
 
 ![Imagen de ejemplo de solicitud a Deepseek](../assets/waiting_deepseek_response.png)
 
-Cuando responda, copiamos directamente su respuesta
+Cuando responda, copiamos su respuesta completa
 
 ![Imagen de copiar respuesta desde deepseek](../assets/copy_deepseek_response.jpg)
 
-Y ejecutamos el comando de aplicar los cambios
+Y ejecutamos el comando de aplicar los cambios. Esto toma la respuesta que copiamos previamente y aplica los fragmentos de código
 
 ```shell
 codepicker apply -c
@@ -73,8 +73,8 @@ incrementButton.addEventListener('click', () => {
   counterElement.textContent = count;
 });
 
+// [!code ++:4]
 decrementButton.addEventListener('click', () => {
-  // [!code ++:4]
   count--;
   counterElement.textContent = count;
 });
@@ -93,8 +93,8 @@ decrementButton.addEventListener('click', () => {
       <h1>Counter</h1>
       <p id="counter">0</p>
       <button id="btnIncrement">Increment</button>
-      <button id="btnDecrement">Decrement</button>
       <!-- [!code ++] -->
+      <button id="btnDecrement">Decrement</button>
     </div>
     <script src="script.js"></script>
   </body>
