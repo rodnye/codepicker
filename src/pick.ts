@@ -58,76 +58,78 @@ export async function pickFiles(options: PickOptions): Promise<string> {
       process.chdir(cwd);
     }
 
-    if (patterns.length === 0) {
-      throw new Error('Provide at least one glob pattern.');
-    }
-
-    // Expand glob
-    let files = await glob(patterns, {
-      onlyFiles: true,
-      dot: true,
-      absolute: false,
-      cwd: process.cwd(),
-    });
-
-    if (files.length === 0) {
-      throw new Error('No files matched the given patterns.');
-    }
-
-    // Apply default filtering
-    if (defaultPatterns) {
-      files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
-      if (files.length === 0) {
-        throw new Error(
-          'No files remained after applying default codepicker rules.\n' +
-            '  Try using --no-default-patterns to force including these files.',
-        );
-      }
-    }
-
-    // Apply .gitignore filtering
-    if (gitignore) {
-      files = await filterByIgnoreFile(files, '.gitignore');
-      if (files.length === 0) {
-        throw new Error(
-          'No files remained after applying .gitignore rules.\n' +
-            '  Try using --no-gitignore to force including these files.',
-        );
-      }
-    }
-
-    // Apply .ignore filtering
-    if (dotIgnore) {
-      files = await filterByIgnoreFile(files, '.ignore');
-      if (files.length === 0) {
-        throw new Error(
-          'No files remained after applying .ignore rules.\n' +
-            '  Try using --no-dot-ignore to force including these files.',
-        );
-      }
-    }
-
-    // Apply .codeignore filtering
-    if (codeignore) {
-      files = await filterByIgnoreFile(files, '.codeignore');
-      if (files.length === 0) {
-        throw new Error(
-          'No files remained after applying .codeignore rules.\n' +
-            '  Try using --no-codeignore to force including these files.',
-        );
-      }
-    }
-
     let output = '';
 
-    for (const file of files) {
-      const displayPath = absolute ? path.join(process.cwd(), file) : file;
-      output += await getFileContent(
-        displayPath,
-        lines,
-        includeLineNumbers,
-        process.cwd(),
-      );
+    if (patterns.length !== 0 || !includeDocs) {
+      if (patterns.length === 0) {
+        throw new Error('Provide at least one glob pattern.');
+      }
+
+      // Expand glob
+      let files = await glob(patterns, {
+        onlyFiles: true,
+        dot: true,
+        absolute: false,
+        cwd: process.cwd(),
+      });
+
+      if (files.length === 0) {
+        throw new Error('No files matched the given patterns.');
+      }
+
+      // Apply default filtering
+      if (defaultPatterns) {
+        files = filterByIgnorePatterns(files, DEFAULTS_IGNORE_PATTERNS);
+        if (files.length === 0) {
+          throw new Error(
+            'No files remained after applying default codepicker rules.\n' +
+              '  Try using --no-default-patterns to force including these files.',
+          );
+        }
+      }
+
+      // Apply .gitignore filtering
+      if (gitignore) {
+        files = await filterByIgnoreFile(files, '.gitignore');
+        if (files.length === 0) {
+          throw new Error(
+            'No files remained after applying .gitignore rules.\n' +
+              '  Try using --no-gitignore to force including these files.',
+          );
+        }
+      }
+
+      // Apply .ignore filtering
+      if (dotIgnore) {
+        files = await filterByIgnoreFile(files, '.ignore');
+        if (files.length === 0) {
+          throw new Error(
+            'No files remained after applying .ignore rules.\n' +
+              '  Try using --no-dot-ignore to force including these files.',
+          );
+        }
+      }
+
+      // Apply .codeignore filtering
+      if (codeignore) {
+        files = await filterByIgnoreFile(files, '.codeignore');
+        if (files.length === 0) {
+          throw new Error(
+            'No files remained after applying .codeignore rules.\n' +
+              '  Try using --no-codeignore to force including these files.',
+          );
+        }
+      }
+
+      for (const file of files) {
+        const displayPath = absolute ? path.join(process.cwd(), file) : file;
+        output += await getFileContent(
+          displayPath,
+          lines,
+          includeLineNumbers,
+          process.cwd(),
+        );
+      }
     }
 
     if (includeDocs) {
